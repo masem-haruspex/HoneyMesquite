@@ -1,0 +1,382 @@
+@use '../../scss/components' as c;
+@use '../../scss/vars' as v;
+
+.cash-flow-liquidity-engine {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  color: v.$white;
+  font-family: v.$font-primary;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: v.$spacing-md;
+  padding: v.$spacing-md;
+  background: transparent;
+  border-radius: v.$border-radius;
+  overflow: hidden;
+
+  .header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: v.$spacing-sm;
+
+    h1 {
+      margin: 0;
+      font-size: v.$font-size-lg;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: v.$primary;
+      text-shadow: 0 0 10px rgba(v.$primary, 0.3);
+
+      &::after {
+        content: '';
+        display: block;
+        width: 100px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, v.$primary, transparent);
+        margin: v.$spacing-xs auto 0;
+      }
+    }
+  }
+
+  .controls {
+    display: flex;
+    gap: v.$spacing-xs;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .time-range-selector {
+    display: flex;
+    gap: v.$spacing-xs;
+  }
+
+  .time-btn {
+    padding: v.$spacing-xs v.$spacing-md;
+    background: transparent;
+    border: 1px solid v.$primary-alpha-20;
+    border-radius: v.$border-radius-sm;
+    color: v.$gray-light;
+    font-size: v.$font-size-xxs;
+    font-family: v.$font-primary;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all v.$transition-normal;
+    min-width: 40px;
+
+    &:hover {
+      background: rgba(v.$primary, 0.1);
+      border-color: v.$primary;
+      color: v.$white;
+    }
+
+    &.active {
+      background: rgba(v.$primary, 0.3);
+      border-color: v.$primary;
+      color: v.$white;
+      box-shadow: 0 0 10px rgba(v.$primary, 0.3);
+    }
+  }
+
+  .metrics-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: v.$spacing-md;
+  }
+
+  .metric-card {
+    @include c.card-styles;
+    position: relative;
+    padding: v.$spacing-md;
+
+    .metric-label {
+      font-size: v.$font-size-xs;
+      color: v.$gray-light;
+      margin-bottom: v.$spacing-xs;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .metric-value {
+      font-size: v.$font-size-lg;
+      font-weight: bold;
+      color: v.$primary;
+    }
+
+    .metric-subtext {
+      font-size: v.$font-size-xxs;
+      color: v.$gray-light;
+      margin-top: v.$spacing-xxs;
+    }
+
+    .glow-effect {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      opacity: 0.25;
+      border-radius: inherit;
+      background: linear-gradient(90deg, transparent, rgba(v.$primary, 0.5), transparent);
+    }
+  }
+
+  .liquidity-gauge-container {
+    @include c.card-styles;
+    position: relative;
+    padding: v.$spacing-md;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .gauge-svg {
+      width: 200px;
+      height: 200px;
+
+      .gauge-background {
+        fill: rgba(v.$black, 0.3);
+      }
+
+      .gauge-warning {
+        fill: v.$warning;
+      }
+
+      .gauge-critical {
+        fill: v.$expense;
+      }
+
+      .gauge-value {
+        fill: v.$primary;
+      }
+
+      .gauge-text {
+        fill: v.$white;
+        font-size: v.$font-size-sm;
+        text-anchor: middle;
+        dominant-baseline: middle;
+      }
+    }
+  }
+
+  .chart-container {
+    @include c.card-styles;
+    position: relative;
+    padding: v.$spacing-md;
+    overflow: hidden;
+
+    .recharts-cartesian-grid {
+      stroke: rgba(v.$primary, 0.1) !important;
+    }
+
+    .recharts-x-axis,
+    .recharts-y-axis {
+      .recharts-cartesian-axis-tick {
+        .recharts-cartesian-axis-tick-value {
+          fill: v.$gray-light !important;
+          font-size: v.$font-size-xxs !important;
+        }
+      }
+    }
+
+    .threshold {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: v.$expense;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 v.$spacing-md;
+      font-size: v.$font-size-xxs;
+      color: v.$expense;
+
+      &.warning {
+        background: v.$warning;
+        color: v.$warning;
+      }
+    }
+  }
+
+  .account-status {
+    @include c.card-styles;
+    position: relative;
+    padding: v.$spacing-md;
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: v.$spacing-md;
+      border-bottom: 1px solid rgba(v.$primary, 0.1);
+      padding-bottom: v.$spacing-sm;
+
+      .section-title {
+        font-size: v.$font-size-sm;
+        color: v.$primary;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .clear-selection {
+        @include c.button-secondary;
+        padding: v.$spacing-xxs v.$spacing-xs;
+        font-size: v.$font-size-xxs;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+    }
+
+    .account-list {
+      max-height: 200px;
+      overflow-y: auto;
+      @include c.custom-scrollbar;
+    }
+
+    .account-item {
+      @include c.card-styles;
+      position: relative;
+      padding: v.$spacing-sm;
+      margin-bottom: v.$spacing-xs;
+      background: rgba(v.$black, 0.2);
+      border: 1px solid rgba(v.$primary, 0.1);
+      border-radius: v.$border-radius-sm;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: rgba(v.$primary, 0.1);
+      }
+
+      &.critical {
+        background: rgba(v.$expense, 0.2);
+        border-color: v.$expense;
+      }
+
+      &.warning {
+        background: rgba(v.$warning, 0.2);
+        border-color: v.$warning;
+      }
+
+      .account-name {
+        font-size: v.$font-size-xs;
+        color: v.$white;
+        margin-bottom: v.$spacing-xxs;
+      }
+
+      .account-balance {
+        font-size: v.$font-size-xs;
+        font-family: v.$font-mono;
+        color: v.$primary;
+
+        .account-threshold {
+          color: v.$gray-light;
+        }
+      }
+
+      .account-progress {
+        margin-top: v.$spacing-xxs;
+
+        .progress-bar {
+          height: 4px;
+          border-radius: 2px;
+          transition: width 0.5s ease;
+        }
+      }
+    }
+
+    .empty-accounts {
+      text-align: center;
+      font-size: v.$font-size-xxs;
+      color: v.$gray-light;
+      padding: v.$spacing-md;
+    }
+  }
+
+  .account-detail-panel {
+    @include c.card-styles;
+    position: absolute;
+    top: v.$spacing-md;
+    right: v.$spacing-md;
+    width: 300px;
+    z-index: 10;
+    padding: v.$spacing-md;
+    background: rgba(c.$card-bg, 0.9);
+    backdrop-filter: blur(5px);
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: v.$spacing-md;
+
+      .account-title {
+        font-size: v.$font-size-sm;
+        color: v.$primary;
+        font-weight: bold;
+      }
+    }
+
+    .panel-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: v.$spacing-md;
+    }
+
+    .detail-metric {
+      .label {
+        font-size: v.$font-size-xxs;
+        color: v.$gray-light;
+        margin-bottom: v.$spacing-xxs;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .value {
+        font-size: v.$font-size-sm;
+        color: v.$white;
+      }
+    }
+  }
+}
+
+@media (max-width: 1200px) {
+  .cash-flow-liquidity-engine {
+    .metrics-row {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: auto auto;
+    }
+
+    .liquidity-gauge-container {
+      grid-column: 1 / -1;
+      justify-self: center;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .cash-flow-liquidity-engine {
+    padding: v.$spacing-sm;
+    gap: v.$spacing-sm;
+
+    .metrics-row {
+      grid-template-columns: 1fr;
+      gap: v.$spacing-sm;
+    }
+
+    .metric-card {
+      padding: v.$spacing-sm;
+
+      .metric-value {
+        font-size: v.$font-size-lg;
+      }
+    }
+
+    .account-detail-panel {
+      left: v.$spacing-sm;
+      right: v.$spacing-sm;
+      bottom: v.$spacing-sm;
+    }
+  }
+}

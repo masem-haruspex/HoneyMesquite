@@ -1,0 +1,1025 @@
+// CashFlow/components/BankReconciliation.scss
+@use '../../scss/vars' as v;
+@use '../../scss/components' as c;
+
+.bank-reconciliation-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-lg;
+  padding: v.$spacing-md;
+  color: v.$white;
+  font-family: v.$font-primary;
+  overflow-y: auto;
+
+  @include c.custom-scrollbar;
+
+  .reconciliation-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: v.$spacing-md;
+    border-bottom: 1px solid rgba(v.$primary, 0.3);
+
+    h3 {
+      margin: 0;
+      color: v.$primary;
+      font-size: v.$font-size-md;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: v.$spacing-sm;
+
+      .refresh-btn,
+      .upload-btn {
+        @include c.civ-glow-active;
+        padding: v.$spacing-xs v.$spacing-md;
+        font-size: v.$font-size-xs;
+        cursor: pointer;
+        transition: all v.$transition-normal;
+        border-radius: v.$border-radius-sm;
+      }
+
+      .refresh-btn {
+        background: rgba(v.$primary, 0.1);
+        border: 1px solid rgba(v.$primary, 0.3);
+        color: v.$primary;
+
+        &:hover:not(:disabled) {
+          background: rgba(v.$primary, 0.2);
+          box-shadow: 0 0 10px rgba(v.$primary, 0.3);
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+
+      .upload-btn {
+        background: rgba(v.$income, 0.1);
+        border: 1px solid v.$income;
+        color: v.$income;
+
+        &:hover:not(:disabled) {
+          background: rgba(v.$income, 0.2);
+          box-shadow: 0 0 10px rgba(v.$income, 0.3);
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+
+  .account-selection {
+    h4 {
+      margin: 0 0 v.$spacing-md 0;
+      color: v.$gray-light;
+      font-size: v.$font-size-sm;
+    }
+
+    .account-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: v.$spacing-md;
+
+      .account-card {
+        background: rgba(v.$black, 0.5);
+        border: 1px solid rgba(v.$primary, 0.2);
+        border-radius: v.$border-radius;
+        padding: v.$spacing-md;
+        cursor: pointer;
+        transition: all v.$transition-normal;
+        position: relative;
+        overflow: hidden;
+
+        &:hover {
+          border-color: rgba(v.$primary, 0.5);
+          transform: translateY(-2px);
+          box-shadow: 0 5px 15px rgba(v.$primary, 0.2);
+        }
+
+        &.selected {
+          border-color: v.$primary;
+          background: rgba(v.$primary, 0.1);
+          box-shadow: 0 0 20px rgba(v.$primary, 0.3);
+
+          &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: v.$primary;
+          }
+        }
+
+        .account-name {
+          font-size: v.$font-size-sm;
+          color: v.$primary;
+          margin-bottom: v.$spacing-xs;
+          font-weight: bold;
+        }
+
+        .account-details {
+          display: flex;
+          gap: v.$spacing-sm;
+          margin-bottom: v.$spacing-sm;
+          font-size: v.$font-size-xs;
+
+          .account-number {
+            color: v.$gray-light;
+          }
+
+          .account-type {
+            color: v.$secondary;
+            text-transform: uppercase;
+          }
+        }
+
+        .account-balance {
+          font-size: v.$font-size-lg;
+          color: v.$white;
+          font-weight: bold;
+          margin-bottom: v.$spacing-xs;
+          font-family: v.$font-mono;
+        }
+
+        .last-reconciled {
+          font-size: v.$font-size-xxs;
+          color: v.$gray-light;
+          opacity: 0.8;
+        }
+      }
+    }
+  }
+
+  .statements-section {
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: v.$spacing-md;
+
+      h4 {
+        margin: 0;
+        color: v.$gray-light;
+        font-size: v.$font-size-sm;
+      }
+
+      .unreconciled-count {
+        color: v.$warning;
+        font-size: v.$font-size-xs;
+        padding: v.$spacing-xxs v.$spacing-sm;
+        background: rgba(v.$warning, 0.1);
+        border-radius: v.$border-radius-sm;
+        font-weight: bold;
+      }
+    }
+
+    .empty-statements {
+      background: rgba(v.$black, 0.3);
+      border: 1px dashed rgba(v.$primary, 0.3);
+      border-radius: v.$border-radius;
+      padding: v.$spacing-xl;
+      text-align: center;
+      color: v.$gray-light;
+
+      p {
+        margin: v.$spacing-xs 0;
+      }
+
+      p:first-child {
+        font-weight: bold;
+        color: v.$white;
+      }
+    }
+
+    .statements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: v.$spacing-md;
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: v.$spacing-sm;
+
+      @include c.custom-scrollbar;
+
+      .statement-card {
+        background: rgba(v.$black, 0.5);
+        border: 1px solid rgba(v.$primary, 0.2);
+        border-radius: v.$border-radius;
+        padding: v.$spacing-md;
+        cursor: pointer;
+        transition: all v.$transition-normal;
+        position: relative;
+
+        &:hover {
+          border-color: rgba(v.$primary, 0.5);
+          transform: translateY(-2px);
+        }
+
+        &.selected {
+          border-color: v.$primary;
+          background: rgba(v.$primary, 0.1);
+          box-shadow: 0 0 15px rgba(v.$primary, 0.3);
+        }
+
+        .statement-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: v.$spacing-sm;
+
+          .statement-date {
+            color: v.$white;
+            font-size: v.$font-size-sm;
+            font-weight: bold;
+          }
+
+          .statement-status {
+            font-size: v.$font-size-xxs;
+            padding: 2px 8px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            font-weight: bold;
+          }
+        }
+
+        .statement-details {
+          .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+            font-size: v.$font-size-xs;
+
+            span:first-child {
+              color: v.$gray-light;
+            }
+
+            span:last-child {
+              color: v.$white;
+              font-weight: bold;
+              font-family: v.$font-mono;
+            }
+          }
+        }
+
+        .reconciled-badge {
+          margin-top: v.$spacing-sm;
+          text-align: center;
+          color: v.$income;
+          font-size: v.$font-size-xs;
+          font-weight: bold;
+          padding: v.$spacing-xxs;
+          background: rgba(v.$income, 0.1);
+          border-radius: v.$border-radius-sm;
+        }
+
+        .reconcile-btn {
+          margin-top: v.$spacing-sm;
+          width: 100%;
+          padding: v.$spacing-xs;
+          background: rgba(v.$primary, 0.2);
+          border: 1px solid v.$primary;
+          color: v.$primary;
+          border-radius: v.$border-radius-sm;
+          cursor: pointer;
+          transition: all v.$transition-normal;
+          font-size: v.$font-size-xs;
+
+          &:hover {
+            background: rgba(v.$primary, 0.3);
+          }
+        }
+      }
+    }
+  }
+
+  .reconciliation-view {
+    background: rgba(v.$black, 0.7);
+    border: 1px solid rgba(v.$primary, 0.3);
+    border-radius: v.$border-radius;
+    padding: v.$spacing-md;
+    margin-top: v.$spacing-lg;
+
+    .view-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: v.$spacing-md;
+      padding-bottom: v.$spacing-md;
+      border-bottom: 1px solid rgba(v.$primary, 0.2);
+
+      h4 {
+        margin: 0;
+        color: v.$primary;
+        font-size: v.$font-size-sm;
+      }
+
+      .close-btn {
+        background: transparent;
+        border: 1px solid rgba(v.$error, 0.3);
+        color: v.$error;
+        padding: v.$spacing-xs v.$spacing-sm;
+        border-radius: v.$border-radius-sm;
+        cursor: pointer;
+        font-size: v.$font-size-xs;
+        transition: all v.$transition-normal;
+
+        &:hover {
+          background: rgba(v.$error, 0.1);
+        }
+      }
+    }
+
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: v.$spacing-md;
+      margin-bottom: v.$spacing-lg;
+
+      .summary-card {
+        background: rgba(v.$black, 0.5);
+        border: 1px solid rgba(v.$primary, 0.2);
+        border-radius: v.$border-radius;
+        padding: v.$spacing-md;
+        text-align: center;
+
+        &.difference.balanced {
+          border-color: v.$income;
+          background: rgba(v.$income, 0.1);
+        }
+
+        &.difference.unbalanced {
+          border-color: v.$error;
+          background: rgba(v.$error, 0.1);
+        }
+
+        .card-label {
+          color: v.$gray-light;
+          font-size: v.$font-size-xs;
+          margin-bottom: v.$spacing-xs;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .card-value {
+          color: v.$white;
+          font-size: v.$font-size-lg;
+          font-weight: bold;
+          font-family: v.$font-mono;
+
+          &.positive {
+            color: v.$income;
+          }
+
+          &.negative {
+            color: v.$expense;
+          }
+        }
+      }
+    }
+
+    .matching-interface {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: v.$spacing-lg;
+      height: 400px;
+      margin-bottom: v.$spacing-lg;
+
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+
+      .unreconciled-items,
+      .statement-lines {
+        background: rgba(v.$black, 0.3);
+        border: 1px solid rgba(v.$primary, 0.2);
+        border-radius: v.$border-radius;
+        padding: v.$spacing-md;
+        display: flex;
+        flex-direction: column;
+
+        h5 {
+          margin: 0 0 v.$spacing-md 0;
+          color: v.$gray-light;
+          font-size: v.$font-size-sm;
+          padding-bottom: v.$spacing-xs;
+          border-bottom: 1px solid rgba(v.$primary, 0.2);
+        }
+
+        .items-list,
+        .lines-list {
+          flex: 1;
+          overflow-y: auto;
+          @include c.custom-scrollbar;
+
+          .unreconciled-item {
+            background: rgba(v.$black, 0.5);
+            border: 1px solid rgba(v.$primary, 0.1);
+            border-radius: v.$border-radius-sm;
+            padding: v.$spacing-sm;
+            margin-bottom: v.$spacing-xs;
+            transition: all v.$transition-normal;
+
+            &.matched {
+              border-color: rgba(v.$income, 0.3);
+              background: rgba(v.$income, 0.1);
+            }
+
+            .item-header {
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: v.$spacing-xs;
+
+              .entry-date {
+                color: v.$gray-light;
+                font-size: v.$font-size-xs;
+              }
+
+              .entry-number {
+                color: v.$primary;
+                font-size: v.$font-size-xs;
+                font-family: v.$font-mono;
+              }
+            }
+
+            .item-details {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: v.$spacing-xs;
+
+              .item-description {
+                color: v.$white;
+                font-size: v.$font-size-xs;
+                max-width: 60%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+              }
+
+              .item-amount {
+                font-size: v.$font-size-xs;
+                font-weight: bold;
+                font-family: v.$font-mono;
+
+                &.debit {
+                  color: v.$income;
+                }
+
+                &.credit {
+                  color: v.$expense;
+                }
+              }
+            }
+
+            .item-actions {
+              .match-select {
+                width: 100%;
+                padding: v.$spacing-xxs;
+                background: rgba(v.$primary, 0.2);
+                border: 1px solid v.$primary;
+                color: v.$white;
+                border-radius: v.$border-radius-sm;
+                font-size: v.$font-size-xxs;
+                cursor: pointer;
+
+                &:focus {
+                  outline: none;
+                  border-color: v.$primary;
+                  box-shadow: 0 0 0 1px rgba(v.$primary, 0.3);
+                }
+              }
+
+              .matched-badge {
+                display: block;
+                width: 100%;
+                text-align: center;
+                color: v.$income;
+                font-size: v.$font-size-xxs;
+                font-weight: bold;
+                padding: v.$spacing-xxs;
+                background: rgba(v.$income, 0.1);
+                border-radius: v.$border-radius-sm;
+              }
+            }
+          }
+
+          .statement-line {
+            background: rgba(v.$black, 0.5);
+            border: 1px solid rgba(v.$primary, 0.1);
+            border-radius: v.$border-radius-sm;
+            padding: v.$spacing-sm;
+            margin-bottom: v.$spacing-xs;
+
+            &.reconciled {
+              border-color: rgba(v.$income, 0.3);
+              background: rgba(v.$income, 0.1);
+            }
+
+            .line-header {
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: v.$spacing-xs;
+
+              .line-date {
+                color: v.$gray-light;
+                font-size: v.$font-size-xs;
+              }
+
+              .line-type {
+                color: v.$secondary;
+                font-size: v.$font-size-xxs;
+                text-transform: uppercase;
+                background: rgba(v.$secondary, 0.1);
+                padding: 2px 6px;
+                border-radius: 10px;
+              }
+            }
+
+            .line-details {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: v.$spacing-xs;
+
+              .line-description {
+                color: v.$white;
+                font-size: v.$font-size-xs;
+                max-width: 60%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+              }
+
+              .line-amount {
+                color: v.$white;
+                font-size: v.$font-size-xs;
+                font-weight: bold;
+                font-family: v.$font-mono;
+              }
+            }
+
+            .line-actions {
+              .matched-info {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-size: v.$font-size-xxs;
+
+                span {
+                  color: v.$income;
+                }
+
+                .unmatch-btn {
+                  background: transparent;
+                  border: 1px solid rgba(v.$error, 0.3);
+                  color: v.$error;
+                  padding: 2px 6px;
+                  border-radius: v.$border-radius-sm;
+                  cursor: pointer;
+                  font-size: v.$font-size-xxs;
+
+                  &:hover {
+                    background: rgba(v.$error, 0.1);
+                  }
+                }
+              }
+
+              .unmatched {
+                color: v.$warning;
+                font-size: v.$font-size-xxs;
+                font-style: italic;
+              }
+            }
+          }
+
+          .empty-state {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: v.$gray-light;
+            font-size: v.$font-size-sm;
+            font-style: italic;
+            text-align: center;
+            padding: v.$spacing-lg;
+          }
+        }
+      }
+    }
+
+    .reconciliation-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: v.$spacing-md;
+      padding-top: v.$spacing-md;
+      border-top: 1px solid rgba(v.$primary, 0.2);
+
+      .cancel-btn {
+        background: transparent;
+        border: 1px solid rgba(v.$error, 0.3);
+        color: v.$error;
+        padding: v.$spacing-xs v.$spacing-lg;
+        border-radius: v.$border-radius-sm;
+        cursor: pointer;
+        font-size: v.$font-size-xs;
+        transition: all v.$transition-normal;
+
+        &:hover {
+          background: rgba(v.$error, 0.1);
+        }
+      }
+
+      .complete-btn {
+        background: rgba(v.$income, 0.2);
+        border: 1px solid v.$income;
+        color: v.$income;
+        padding: v.$spacing-xs v.$spacing-lg;
+        border-radius: v.$border-radius-sm;
+        cursor: pointer;
+        font-size: v.$font-size-xs;
+        transition: all v.$transition-normal;
+
+        &:hover:not(.disabled) {
+          background: rgba(v.$income, 0.3);
+          box-shadow: 0 0 10px rgba(v.$income, 0.3);
+        }
+
+        &.disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+
+  .instructions {
+    background: rgba(v.$black, 0.5);
+    border: 1px solid rgba(v.$primary, 0.2);
+    border-radius: v.$border-radius;
+    padding: v.$spacing-lg;
+    margin-top: v.$spacing-lg;
+
+    h4 {
+      margin: 0 0 v.$spacing-lg 0;
+      color: v.$primary;
+      text-align: center;
+      font-size: v.$font-size-sm;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: v.$spacing-lg;
+
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+      }
+
+      .step {
+        display: flex;
+        align-items: flex-start;
+        gap: v.$spacing-md;
+
+        .step-number {
+          background: rgba(v.$primary, 0.2);
+          color: v.$primary;
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          flex-shrink: 0;
+          font-size: v.$font-size-sm;
+        }
+
+        .step-content {
+          strong {
+            display: block;
+            color: v.$white;
+            font-size: v.$font-size-xs;
+            margin-bottom: 4px;
+          }
+
+          p {
+            color: v.$gray-light;
+            font-size: v.$font-size-xxs;
+            margin: 0;
+            line-height: 1.4;
+          }
+        }
+      }
+    }
+  }
+
+  .upload-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+
+    .upload-modal {
+      background: rgba(v.$black, 0.9);
+      border: 1px solid v.$primary;
+      border-radius: v.$border-radius;
+      width: 90%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: modalFadeIn 0.3s ease-out;
+
+      @keyframes modalFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: v.$spacing-md;
+        border-bottom: 1px solid rgba(v.$primary, 0.3);
+
+        h4 {
+          margin: 0;
+          color: v.$primary;
+          font-size: v.$font-size-sm;
+        }
+
+        .close-modal {
+          background: transparent;
+          border: none;
+          color: v.$gray-light;
+          font-size: 24px;
+          cursor: pointer;
+          line-height: 1;
+          width: 24px;
+          height: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          &:hover:not(:disabled) {
+            color: v.$white;
+          }
+
+          &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+        }
+      }
+
+      .modal-body {
+        padding: v.$spacing-md;
+
+        .form-group {
+          margin-bottom: v.$spacing-md;
+
+          label {
+            display: block;
+            color: v.$gray-light;
+            font-size: v.$font-size-xs;
+            margin-bottom: v.$spacing-xs;
+            text-transform: uppercase;
+          }
+
+          .selected-account {
+            padding: v.$spacing-sm;
+            background: rgba(v.$primary, 0.1);
+            border: 1px solid rgba(v.$primary, 0.3);
+            border-radius: v.$border-radius-sm;
+            color: v.$primary;
+            font-weight: bold;
+            font-size: v.$font-size-xs;
+          }
+
+          input[type="date"] {
+            width: 100%;
+            padding: v.$spacing-sm;
+            background: rgba(v.$black, 0.5);
+            border: 1px solid rgba(v.$primary, 0.3);
+            border-radius: v.$border-radius-sm;
+            color: v.$white;
+            font-family: v.$font-primary;
+
+            &:focus {
+              outline: none;
+              border-color: v.$primary;
+            }
+
+            &:disabled {
+              opacity: 0.5;
+              cursor: not-allowed;
+            }
+          }
+
+          .file-upload {
+            input[type="file"] {
+              width: 100%;
+              padding: v.$spacing-xs;
+              background: rgba(v.$black, 0.5);
+              border: 1px solid rgba(v.$primary, 0.3);
+              border-radius: v.$border-radius-sm;
+              color: v.$white;
+              cursor: pointer;
+
+              &:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+              }
+            }
+
+            .file-info {
+              margin-top: v.$spacing-xs;
+              padding: v.$spacing-xs;
+              background: rgba(v.$primary, 0.1);
+              border-radius: v.$border-radius-sm;
+              color: v.$primary;
+              font-size: v.$font-size-xs;
+            }
+          }
+
+          .file-help {
+            margin-top: v.$spacing-xs;
+            color: v.$gray-light;
+            font-size: v.$font-size-xxs;
+            font-style: italic;
+          }
+        }
+      }
+
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: v.$spacing-sm;
+        padding: v.$spacing-md;
+        border-top: 1px solid rgba(v.$primary, 0.3);
+
+        .cancel-btn,
+        .upload-btn {
+          padding: v.$spacing-xs v.$spacing-md;
+          border-radius: v.$border-radius-sm;
+          cursor: pointer;
+          font-size: v.$font-size-xs;
+          transition: all v.$transition-normal;
+        }
+
+        .cancel-btn {
+          background: transparent;
+          border: 1px solid rgba(v.$error, 0.3);
+          color: v.$error;
+
+          &:hover:not(:disabled) {
+            background: rgba(v.$error, 0.1);
+          }
+
+          &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+        }
+
+        .upload-btn {
+          background: rgba(v.$income, 0.2);
+          border: 1px solid v.$income;
+          color: v.$income;
+
+          &:hover:not(:disabled) {
+            background: rgba(v.$income, 0.3);
+          }
+
+          &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+  }
+
+  .no-accounts-message {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: v.$spacing-xl;
+    background: rgba(v.$black, 0.3);
+    border: 2px dashed rgba(v.$primary, 0.3);
+    border-radius: v.$border-radius;
+
+    .message-icon {
+      font-size: 48px;
+      margin-bottom: v.$spacing-md;
+      opacity: 0.7;
+    }
+
+    h4 {
+      color: v.$primary;
+      margin: 0 0 v.$spacing-sm 0;
+      font-size: v.$font-size-md;
+    }
+
+    p {
+      color: v.$gray-light;
+      margin: 0 0 v.$spacing-md 0;
+      max-width: 400px;
+    }
+
+    .setup-btn {
+      @include c.civ-glow-active;
+      padding: v.$spacing-xs v.$spacing-lg;
+      background: rgba(v.$primary, 0.1);
+      border: 1px solid v.$primary;
+      color: v.$primary;
+      border-radius: v.$border-radius-sm;
+      cursor: pointer;
+      font-size: v.$font-size-xs;
+      transition: all v.$transition-normal;
+
+      &:hover {
+        background: rgba(v.$primary, 0.2);
+      }
+    }
+  }
+
+  .bank-reconciliation-loading,
+  .bank-reconciliation-error {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: v.$spacing-xl;
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(v.$primary, 0.3);
+      border-top: 3px solid v.$primary;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: v.$spacing-md;
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    }
+
+    .error-icon {
+      font-size: 48px;
+      margin-bottom: v.$spacing-md;
+      opacity: 0.7;
+    }
+
+    p {
+      color: v.$gray-light;
+      margin-bottom: v.$spacing-md;
+    }
+
+    .retry-btn {
+      @include c.civ-glow-active;
+      padding: v.$spacing-xs v.$spacing-lg;
+      background: rgba(v.$primary, 0.1);
+      border: 1px solid v.$primary;
+      color: v.$primary;
+      border-radius: v.$border-radius-sm;
+      cursor: pointer;
+      font-size: v.$font-size-xs;
+
+      &:hover {
+        background: rgba(v.$primary, 0.2);
+      }
+    }
+  }
+}

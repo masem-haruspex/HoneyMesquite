@@ -1,0 +1,317 @@
+@use '../../scss/vars' as v;
+@use '../../scss/components' as c;
+
+.account-ledger-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: rgba(v.$black, 0.4);
+  border-radius: v.$border-radius;
+  overflow: hidden;
+  border: 1px solid rgba(v.$primary, 0.2);
+}
+
+.ledger-header {
+  display: flex;
+  align-items: center;
+  gap: v.$spacing-md;
+  padding: v.$spacing-md;
+  border-bottom: 1px solid rgba(v.$primary, 0.2);
+  background: rgba(v.$black, 0.6);
+
+  .back-btn {
+    @include c.button-reset;
+    display: flex;
+    align-items: center;
+    gap: v.$spacing-xs;
+    color: v.$gray-light;
+    font-size: v.$font-size-xs;
+    padding: v.$spacing-xs v.$spacing-sm;
+    border: 1px solid rgba(v.$gray-light, 0.3);
+    border-radius: v.$border-radius-sm;
+    cursor: pointer;
+    transition: all v.$transition-fast;
+
+    &:hover {
+      color: v.$primary;
+      border-color: v.$primary;
+      background: rgba(v.$primary, 0.1);
+    }
+  }
+
+  .account-info {
+    flex: 1;
+    
+    h3 {
+      margin: 0 0 v.$spacing-xxs 0;
+      color: v.$primary;
+      font-size: v.$font-size-sm;
+      text-transform: uppercase;
+    }
+
+    .account-meta {
+      display: flex;
+      gap: v.$spacing-sm;
+      
+      .type-badge, .normal-balance, .status {
+        font-size: v.$font-size-xxs;
+        padding: 2px 6px;
+        border-radius: 4px;
+        text-transform: uppercase;
+        background: rgba(v.$white, 0.05);
+      }
+      
+      .type-badge.asset { color: v.$income; }
+      .type-badge.liability { color: v.$expense; }
+      .normal-balance.debit { color: v.$income; }
+      .normal-balance.credit { color: v.$expense; }
+      .status.active { color: v.$success; }
+    }
+  }
+}
+
+.ledger-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: v.$spacing-md;
+  border-bottom: 1px solid rgba(v.$primary, 0.1);
+  background: rgba(v.$black, 0.5);
+  flex-wrap: wrap;
+  gap: v.$spacing-md;
+
+  .date-filters {
+    display: flex;
+    align-items: center;
+    gap: v.$spacing-sm;
+
+    .date-group {
+      display: flex;
+      align-items: center;
+      gap: v.$spacing-xs;
+      
+      label {
+        color: v.$gray-light;
+        font-size: v.$font-size-xxs;
+        text-transform: uppercase;
+      }
+
+      input[type="date"] {
+        @include c.form-input;
+        background: rgba(v.$white, 0.05);
+        border: 1px solid rgba(v.$primary, 0.3);
+        color: v.$white;
+        padding: v.$spacing-xs;
+        font-size: v.$font-size-xxs;
+        
+        &:focus {
+          border-color: v.$primary;
+          outline: none;
+        }
+      }
+    }
+
+    .reset-btn {
+      @include c.button-reset;
+      padding: v.$spacing-xs v.$spacing-sm;
+      background: transparent;
+      border: 1px solid v.$gray-light;
+      color: v.$gray-light;
+      font-size: v.$font-size-xxs;
+      cursor: pointer;
+      border-radius: v.$border-radius-sm;
+      
+      &:hover {
+        border-color: v.$white;
+        color: v.$white;
+      }
+    }
+  }
+
+  .balance-summary {
+    display: flex;
+    gap: v.$spacing-lg;
+    
+    .summary-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      
+      .summary-label {
+        color: v.$gray-light;
+        font-size: v.$font-size-xxs;
+        text-transform: uppercase;
+      }
+      
+      .summary-value {
+        font-family: v.$font-mono;
+        font-weight: bold;
+        font-size: v.$font-size-sm;
+        
+        &.positive { color: v.$income; }
+        &.negative { color: v.$expense; }
+        &.count { color: v.$primary; }
+        
+        .balance-type {
+          color: v.$gray-light;
+          font-size: v.$font-size-xxs;
+          margin-left: 4px;
+          font-weight: normal;
+        }
+      }
+    }
+  }
+}
+
+.ledger-table {
+  flex: 1;
+  overflow-y: auto;
+  @include c.custom-scrollbar;
+
+  .table-header, .table-body {
+    display: grid;
+    grid-template-columns: 100px 100px 1.5fr 100px 100px 100px 120px 80px;
+    gap: v.$spacing-xs;
+    padding: v.$spacing-xs v.$spacing-md;
+    align-items: center;
+    min-width: 800px;
+  }
+
+  .table-header {
+    position: sticky;
+    top: 0;
+    background: rgba(v.$black, 0.8);
+    backdrop-filter: blur(5px);
+    border-bottom: 1px solid rgba(v.$primary, 0.3);
+    z-index: 10;
+    
+    .header-cell {
+      color: v.$gray-light;
+      font-size: v.$font-size-xxs;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+  }
+
+  .table-body {
+    .table-row {
+      display: contents;
+      
+      > div {
+        padding: v.$spacing-xs v.$spacing-sm;
+        border-bottom: 1px solid rgba(v.$primary, 0.1);
+        color: v.$white;
+        font-size: v.$font-size-xs;
+        display: flex;
+        align-items: center;
+      }
+
+      &:hover > div {
+        background: rgba(v.$primary, 0.05);
+      }
+
+      .date { font-family: v.$font-mono; color: v.$secondary; }
+      .entry-number { font-family: v.$font-mono; color: v.$white; }
+      .description { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .reference { font-family: v.$font-mono; color: v.$gray-light; }
+      
+      .debit, .credit {
+        font-family: v.$font-mono;
+        justify-content: flex-end;
+      }
+      .debit { color: v.$income; }
+      .credit { color: v.$expense; }
+
+      .balance-amount {
+        font-family: v.$font-mono;
+        font-weight: bold;
+        justify-content: flex-end;
+        
+        &.positive { color: v.$income; }
+        &.negative { color: v.$expense; }
+        
+        .balance-type {
+          color: v.$gray-light;
+          font-size: v.$font-size-xxs;
+          margin-left: 4px;
+        }
+      }
+
+      .status {
+        justify-content: center;
+        .status-badge {
+          padding: 2px 6px;
+          border-radius: 4px;
+          font-size: v.$font-size-xxs;
+          text-transform: uppercase;
+          background: rgba(v.$white, 0.1);
+          
+          &.draft { color: v.$warning; background: rgba(v.$warning, 0.1); }
+          &.posted { color: v.$success; background: rgba(v.$success, 0.1); }
+          &.void { color: v.$error; background: rgba(v.$error, 0.1); }
+        }
+        
+        .reconciled-badge {
+          color: v.$success;
+          margin-left: 4px;
+        }
+      }
+    }
+    
+    .empty-row {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: v.$spacing-xl;
+      color: v.$gray-light;
+      font-style: italic;
+    }
+  }
+}
+
+.ledger-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: v.$spacing-md;
+  background: rgba(v.$black, 0.6);
+  border-top: 1px solid rgba(v.$primary, 0.2);
+
+  .footer-stats {
+    display: flex;
+    gap: v.$spacing-lg;
+    
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      
+      .stat-label {
+        color: v.$gray-light;
+        font-size: v.$font-size-xxs;
+        text-transform: uppercase;
+      }
+      
+      .stat-value {
+        font-family: v.$font-mono;
+        font-weight: bold;
+        color: v.$white;
+        
+        &.positive { color: v.$income; }
+        &.negative { color: v.$expense; }
+      }
+    }
+  }
+
+  .export-btn {
+    @include c.button-primary;
+    background: transparent;
+    border: 1px solid v.$primary;
+    color: v.$primary;
+    padding: v.$spacing-xs v.$spacing-md;
+    font-size: v.$font-size-xxs;
+    
+    &:hover {
+      background: rgba(v.$primary, 0.1);
+      box-shadow: 0 0 8px rgba(v.$primary, 0.3);
+    }
+  }
+}

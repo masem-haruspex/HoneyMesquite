@@ -1,0 +1,47 @@
+// src/components/DepartmentPerformanceScatterPlot.scss
+@use '../../scss/components' as c;
+@use '../../scss/vars' as v;
+
+.scatter {
+  &-tooltip {
+    background: rgba(v.$black, 0.9);
+    border: v.$border-width solid v.$secondary;
+    border-radius: v.$border-radius-sm;
+    padding: v.$spacing-sm;
+    min-width: 200px;
+    transform: translateX(-50%);
+    transition: opacity v.$transition-fast;
+    opacity: 0;
+    pointer-events: none;
+    box-shadow: v.$shadow-md;
+    z-index: v.$z-index-above;
+    font-family: v.$font-primary;
+    color: v.$white;
+
+    &__content {
+      font-size: v.$font-size-xs;
+      color: v.$primary;
+
+      div {
+        margin-bottom: v.$spacing-xxs;
+      }
+    }
+
+    &.visible {
+      opacity: 1;
+    }
+  }
+
+  &-indicator {
+    &--current {
+      color: v.$accent;
+      font-weight: bold;
+      margin-top: v.$spacing-xs;
+    }
+  }
+}
+
+.scatter-stats{
+      font-size: v.$font-size-xs;
+      color: v.$primary;
+}

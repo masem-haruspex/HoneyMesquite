@@ -1,0 +1,250 @@
+// GeneralLedger.scss
+@use '../scss/components' as c;
+@use '../scss/vars' as v;
+
+.general-ledger-wrapper {
+  pointer-events: none !important;
+}
+
+.general-ledger-dashboard {
+  @include c.mm_container;
+  width: 850px;
+  height: 600px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  pointer-events: auto;
+  background: rgba(v.$black, 0.8);
+  border: 1px solid v.$primary;
+  box-shadow: 0 0 20px rgba(v.$primary, 0.3);
+
+  .glow-effect {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.25;
+    border-radius: inherit;
+    background: radial-gradient(
+      circle at center,
+      rgba(v.$primary, 0.6) 0%,
+      rgba(v.$black, 0.8) 70%
+    );
+    filter: blur(6px);
+  }
+
+  .dashboard-header {
+    padding: v.$spacing-md v.$spacing-lg;
+    border-bottom: 1px solid v.$primary;
+    background: rgba(v.$black, 0.6);
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .dashboard-title {
+      color: v.$primary;
+      font-family: v.$font-primary;
+      font-size: v.$font-size-sm;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin: 0;
+    }
+
+    .tabs {
+      display: flex;
+      gap: v.$spacing-xs;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      .tab-button {
+        @include c.civ-glow-active;
+        padding: v.$spacing-xs v.$spacing-md;
+        background: transparent;
+        color: v.$gray-light;
+        font-size: v.$font-size-xxs;
+        font-family: v.$font-primary;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: all v.$transition-normal;
+        border-radius: 4px;
+        white-space: nowrap;
+        border: none;
+
+        &:focus {
+          outline: none;
+        }
+
+        &.active {
+          border-color: v.$primary;
+          color: v.$primary;
+        }
+
+        &:hover:not(.active) {
+          border-color: rgba(v.$primary, 0.3);
+          color: v.$primary;
+        }
+      }
+    }
+
+    .header-actions {
+      display: flex;
+      gap: v.$spacing-sm;
+
+      .header-button {
+        @include c.civ-glow-active;
+        padding: v.$spacing-xs v.$spacing-sm;
+        background: transparent;
+        border: 1px solid rgba(v.$primary, 0.3);
+        color: v.$primary;
+        font-size: v.$font-size-xxs;
+        font-family: v.$font-primary;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: all v.$transition-normal;
+
+        &:hover {
+          background: rgba(v.$primary, 0.15);
+          border-color: v.$primary;
+          box-shadow: 0 0 8px rgba(v.$primary, 0.3);
+        }
+      }
+    }
+  }
+
+  .main-content {
+    @include c.custom-scrollbar;
+    flex: 1;
+    display: flex;
+    padding: v.$spacing-md;
+    gap: v.$spacing-md;
+    overflow: hidden;
+    background: rgba(v.$black, 0.3);
+
+    .left-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: v.$spacing-md;
+      min-width: 300px;
+    }
+
+    .right-panel {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      gap: v.$spacing-md;
+      overflow: hidden;
+    }
+  }
+
+  .loading-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: v.$primary;
+    font-family: v.$font-primary;
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(v.$primary, 0.3);
+      border-top: 3px solid v.$primary;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: v.$spacing-md;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  }
+
+  .error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: v.$error;
+    font-family: v.$font-primary;
+    text-align: center;
+    padding: v.$spacing-lg;
+
+    .error-icon {
+      font-size: 48px;
+      margin-bottom: v.$spacing-md;
+      opacity: 0.7;
+    }
+
+    .retry-button {
+      @include c.civ-glow-active;
+      margin-top: v.$spacing-md;
+      padding: v.$spacing-sm v.$spacing-lg;
+      background: transparent;
+      border: 1px solid v.$error;
+      color: v.$error;
+      font-family: v.$font-primary;
+      cursor: pointer;
+      transition: all v.$transition-normal;
+
+      &:hover {
+        background: rgba(v.$error, 0.1);
+        box-shadow: 0 0 15px rgba(v.$error, 0.3);
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .general-ledger-dashboard {
+    width: 95vw;
+    height: 90vh;
+
+    .dashboard-header {
+      padding: v.$spacing-sm;
+      flex-direction: column;
+      gap: v.$spacing-sm;
+
+      .dashboard-title {
+        font-size: v.$font-size-xs;
+      }
+
+      .tabs {
+        width: 100%;
+        gap: v.$spacing-xxs;
+
+        .tab-button {
+          padding: v.$spacing-xxs v.$spacing-sm;
+          min-width: 70px;
+          font-size: v.$font-size-xxxs;
+        }
+      }
+
+      .header-actions {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    .main-content {
+      flex-direction: column;
+      padding: v.$spacing-sm;
+
+      .left-panel,
+      .right-panel {
+        min-width: unset;
+      }
+    }
+  }
+}

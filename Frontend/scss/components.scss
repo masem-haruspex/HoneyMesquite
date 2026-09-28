@@ -1,0 +1,615 @@
+// components.scss
+@use './vars' as v;
+@use "sass:math";
+@use "sass:map";
+
+$full-width: 100%;
+$full-height: 100%;
+
+$button-primary-bg: rgba(v.$primary, 0.2);
+$button-primary-border: v.$primary;
+$button-primary-hover-bg: rgba(v.$primary, 0.4);
+$button-primary-hover-border: v.$accent;
+$button-primary-hover-shadow: 0 0 10px rgba(v.$accent, 0.5);
+
+$button-secondary-bg: transparent;
+$button-secondary-border: v.$error;
+$button-secondary-color: v.$error;
+$button-secondary-hover-bg: rgba(v.$error, 0.1);
+
+$button-padding: v.$spacing-sm v.$spacing-md;
+$button-border-radius: v.$border-radius-sm;
+$button-transition: v.$transition-fast;
+
+$input-bg: rgba(v.$black, 0.8);
+$input-border: v.$border-width solid v.$border-color;
+$input-focus-border: v.$border-width solid v.$primary;
+$input-border-radius: v.$border-radius-sm;
+$input-padding: v.$spacing-sm;
+$input-color: v.$white;
+$input-font-family: v.$font-primary;
+
+$select-arrow: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300F5FF'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+
+$card-bg: v.$card-bg;
+$card-border: v.$border-width solid transparent;
+$card-hover-border: v.$border-width solid v.$primary;
+$card-border-radius: v.$border-radius;
+$card-padding: v.$spacing-md;
+$card-shadow: v.$shadow-sm;
+$card-hover-shadow: v.$shadow-md;
+$card-transition: v.$transition-normal;
+
+$list-item-margin: v.$spacing-sm;
+$list-item-padding: v.$spacing-md;
+$list-item-height: 60px;
+$list-item-width: 340px;
+$list-scrollbar-width: 4px;
+$list-scrollbar-hover-width: 6px;
+$list-scrollbar-color: rgba(v.$primary, 0.5);
+$list-scrollbar-hover-color: v.$primary;
+$list-scrollbar-glow: rgba(v.$primary, 0.7);
+
+$header-font-size: 0.5em;
+$header-color: v.$primary;
+$header-margin: v.$spacing-md;
+
+$type-income-color: v.$income;
+$type-expense-color: v.$expense;
+$type-font-size: v.$font-size-xs;
+$type-letter-spacing: 1px;
+
+$tooltip-bg: rgba(v.$black, 0.9);
+$tooltip-border: v.$border-width solid v.$secondary;
+$tooltip-border-radius: v.$border-radius-sm;
+$tooltip-padding: v.$spacing-sm;
+$tooltip-shadow: v.$shadow-md;
+$tooltip-z-index: v.$z-index-above;
+$tooltip-font-size: v.$font-size-xs;
+
+$detail-panel-border: v.$border-width * 4 solid v.$primary;
+$detail-panel-padding: v.$spacing-md;
+$detail-panel-width: 300px;
+$detail-label-color: v.$primary;
+$detail-value-color: v.$white;
+
+$text-ellipsis: nowrap hidden ellipsis;
+
+@mixin button-reset {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  text-align: left;
+  text-decoration: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+@mixin card-styles {
+  background: $card-bg;
+  border: $card-border;
+  border-radius: $card-border-radius;
+  padding: $card-padding;
+  transition: $card-transition;
+  position: relative;
+}
+
+@mixin button-primary {
+  background: $button-primary-bg;
+  border: 1px solid $button-primary-border;
+  color: v.$white;
+  padding: $button-padding;
+  border-radius: $button-border-radius;
+  cursor: pointer;
+  transition: $button-transition;
+
+  &:hover {
+    background: $button-primary-hover-bg;
+    border-color: $button-primary-hover-border;
+    box-shadow: $button-primary-hover-shadow;
+  }
+}
+
+@mixin button-secondary {
+  @include button-primary;
+  background: $button-secondary-bg;
+  border-color: $button-secondary-border;
+  color: $button-secondary-color;
+
+  &:hover {
+    background: $button-secondary-hover-bg;
+  }
+}
+
+@mixin form-input {
+  width: 100%;
+  padding: $input-padding;
+  background: $input-bg;
+  border: $input-border;
+  border-radius: $input-border-radius;
+  color: $input-color;
+  font-family: $input-font-family;
+
+  &:focus {
+    outline: none;
+    border: $input-focus-border;
+  }
+}
+
+$select-bg: rgba(v.$black, 0.8);
+$select-color: v.$white;
+$select-border: v.$border-width solid rgba(v.$primary, 0.4);
+$select-focus-border: v.$border-width solid v.$primary;
+$select-border-radius: v.$border-radius-sm;
+$select-padding: v.$spacing-sm v.$spacing-md v.$spacing-sm v.$spacing-sm;
+$select-font-family: v.$font-primary;
+
+$select-arrow: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300F5FF'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+
+@mixin select-input {
+  @include form-input;
+  appearance: none;
+  background-image: $select-arrow;
+  background-repeat: no-repeat;
+  background-position: right v.$spacing-sm center;
+  background-size: 1.2em;
+  padding-right: v.$spacing-lg;
+  cursor: pointer;
+  transition: v.$transition-fast;
+
+  &:focus {
+    border: $select-focus-border;
+    box-shadow: 0 0 0 2px rgba(v.$primary, 0.2);
+  }
+
+  &::-ms-expand {
+    display: none;
+  }
+}
+
+@mixin select-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-xs;
+
+  label {
+    font-size: v.$font-size-xs;
+    color: v.$primary;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+}
+
+
+@mixin select-input {
+  @include form-input;
+  background-image: $select-arrow;
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 2em;
+  padding-right: 1.5em;
+  appearance: none;
+}
+
+@mixin custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 0;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $list-scrollbar-color;
+    border-radius: 3px;
+    transition: all v.$transition-fast;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: inherit;
+      box-shadow: 0 0 10px $list-scrollbar-glow;
+      opacity: 0;
+      transition: opacity v.$transition-fast;
+    }
+
+    &:hover::after {
+      opacity: 1;
+    }
+  }
+
+  scrollbar-width: thin;
+  scrollbar-color: $list-scrollbar-color transparent;
+}
+
+.custom-select {
+  position: relative;
+  width: 100%;
+
+  &__control {
+    @include form-input;
+    background: rgba(v.$white, 0.1);
+    color: v.$white;
+    font-family: v.$font-primary;
+    font-size: v.$font-size-xs;
+    padding: v.$spacing-xs v.$spacing-sm;
+    border-radius: v.$border-radius;
+    border: 1px solid v.$gray-dark;
+    width: 100%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:focus {
+      border-color: v.$primary;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(v.$primary, 0.2);
+    }
+  }
+
+  &__options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: rgba(v.$black, 0.95);
+    border: 1px solid v.$primary;
+    border-radius: v.$border-radius;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    transform-style: preserve-3d;
+    transform: translateZ(20px);
+    backdrop-filter: blur(5px);
+    max-height: 200px;
+    overflow-y: auto;
+    @include custom-scrollbar;
+    overflow-x: hidden; 
+  }
+
+  &__option {
+    padding: v.$spacing-sm;
+    color: v.$white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    z-index: 1;
+
+    &:hover {
+      background: rgba(v.$primary, 0.1);
+      box-shadow: 0 0 15px rgba(v.$primary, 0.4);
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(v.$primary, 0.2);
+        z-index: -1;
+        border-radius: 3px;
+      }
+    }
+
+    &--selected {
+      background: rgba(v.$primary, 0.3);
+      font-weight: bold;
+      color: v.$primary;
+    }
+  }
+}
+
+@mixin delete-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba($type-expense-color, 0.2);
+  border: 1px solid rgba($type-expense-color, 0.4);
+  color: $type-expense-color;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: $button-transition;
+  z-index: v.$z-index-above;
+  padding: 0;
+  opacity: 0;
+
+  &:hover {
+    background: rgba($type-expense-color, 0.3);
+    border-color: rgba($type-expense-color, 0.6);
+  }
+
+  &::before {
+    content: '×';
+    font-size: 16px;
+    line-height: 1;
+  }
+}
+
+@keyframes glow-pulse {
+  0% {
+    box-shadow: 0 0 6px 0 rgba(v.$primary, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 14px 2px rgba(v.$primary, 0.8);
+  }
+}
+
+@keyframes scan-line {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100%);
+  }
+}
+
+@mixin icon-btn-outline {
+  width: 30px;
+  height: 30px;
+  border: 1px solid v.$primary;
+  background: transparent;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden; 
+  transition: box-shadow v.$transition-normal;
+  box-shadow: 0 0 3px 0 rgba(v.$primary, 0.3);
+
+  svg {
+    width: 16px;
+    height: 16px;
+    stroke: v.$primary;
+    stroke-width: 2.2;
+    fill: none;
+    transition: stroke v.$transition-normal;
+    position: relative;
+    z-index: 2;
+  }
+
+  &:hover {
+    box-shadow: 0 0 8px 1px rgba(v.$primary, 0.6);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+@mixin glow-pulse-once {
+  animation: glow-pulse 2.5s ease-in-out infinite alternate;
+}
+
+@mixin scan-line-overlay {
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(v.$white, 0.3),
+      transparent
+    );
+    animation: scan-line 3s linear infinite;
+    pointer-events: none;
+    opacity: 0.4;
+    z-index: 1;
+  }
+}
+
+@mixin text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@mixin glow-on-hover {
+  position: relative;
+  overflow: hidden; 
+  color: v.$primary;
+  border: none;
+  outline: none;
+  box-shadow: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 2px; 
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at 50% 50%,
+      rgba(v.$primary, 0.5),
+      transparent 70%
+    );
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+    transition: opacity v.$transition-normal;
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -20%;
+    left: 0;
+    width: 100%;
+    height: 40%;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      rgba(v.$white, 0.8),
+      transparent
+    );
+    opacity: 0;
+    transform: translateY(-100%);
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(0.5px);
+    transition: opacity v.$transition-fast;
+  }
+
+  &:hover::after {
+    opacity: 1;
+    animation: scan-down 1.0s ease-in-out infinite;
+  }
+
+  svg {
+    transition: stroke v.$transition-normal;
+    stroke: v.$primary;
+  }
+
+}
+
+@keyframes scan-down {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(240%);
+  }
+}
+
+@mixin glow-list-item {
+  position: relative;
+  cursor: pointer;
+  transition: transform v.$transition-fast;
+
+  &:hover {
+    transform: translateX(5px);
+
+    .glow-effect {
+      opacity: map.get(map.get(v.$glow-effects, 'primary'), 'opacity');
+    }
+  }
+}
+
+@keyframes hologram-scan {
+  0% {
+    transform: rotate(0deg) scale(0.8);
+  }
+  100% {
+    transform: rotate(360deg) scale(1.2);
+  }
+}
+
+@mixin civ-glow-hover($color: v.$primary, $width: 3px, $spread: 4px, $blur: 8px) {
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: $width;
+    background: $color;
+    border-radius: 0 0 $width/2 $width/2;
+    box-shadow: 0 0 $blur $spread rgba($color, 0.6);
+    opacity: 0;
+    transition: width 0.3s ease, opacity 0.3s ease;
+  }
+
+  &:hover {
+    &::after {
+      width: 100%;
+      opacity: 1;
+    }
+  }
+
+  &:active {
+    &::after {
+      transform: scaleX(1.05);
+    }
+  }
+}
+
+@mixin civ-glow-active($color: v.$primary, $height: 2px, $spread: 3px, $blur: 8px) {
+  position: relative;
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: $height;
+    background: $color;
+    box-shadow: 0 0 $blur $spread rgba($color, 0.7);
+    border-radius: 50%;
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    z-index: 1;
+  }
+
+  &:hover {
+    color: $color;
+  }
+
+  &.active {
+    color: $color;
+    &::after {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+  }
+}
+
+@mixin mm_container {
+  transition: all v.$transition-slow;
+  padding: v.$spacing-md;
+  background: rgba(v.$black, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(v.$primary, 0.3);
+  border-radius: v.$border-radius-lg;
+  box-shadow: v.$shadow-lg;
+  font-family: v.$font-primary;
+  color: v.$white;
+
+  .glow-effect {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: radial-gradient(circle at 50% 30%, rgba(v.$primary, 0.4), transparent 70%);
+    filter: blur(6px);
+    opacity: 0.3;
+  }
+}
+

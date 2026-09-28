@@ -1,0 +1,159 @@
+// vars.scss
+@use "sass:color";
+
+$scale-factor: 1;
+
+$primary: #00F5FF;
+$primary-light: color.scale($primary, $lightness: +15%);
+$primary-lighter: color.scale($primary, $lightness: +30%);
+$primary-dark: color.scale($primary, $lightness: -15%);
+$primary-darker: color.scale($primary, $lightness: -30%);
+$primary-alpha-10: rgba($primary, 0.1);
+$primary-alpha-20: rgba($primary, 0.2);
+$primary-alpha-50: rgba($primary, 0.5);
+
+$secondary: #00B4FF;
+$secondary-light: color.scale($secondary, $lightness: +15%);
+$secondary-lighter: color.scale($secondary, $lightness: +30%);
+$secondary-dark: color.scale($secondary, $lightness: -15%);
+$secondary-darker: color.scale($secondary, $lightness: -30%);
+
+$accent: #FF00FF;
+$accent-light: color.scale($accent, $lightness: +15%);
+$accent-lighter: color.scale($accent, $lightness: +30%);
+$accent-dark: color.scale($accent, $lightness: -15%);
+$accent-darker: color.scale($accent, $lightness: -30%);
+
+$income: #00FFAA;
+$income-light: color.scale($income, $lightness: +15%);
+$income-dark: color.scale($income, $lightness: -15%);
+
+$expense: #FF5555;
+$expense-light: color.scale($expense, $lightness: +15%);
+$expense-dark: color.scale($expense, $lightness: -15%);
+
+$error: #FF5555;
+$error-light: color.scale($error, $lightness: +15%);
+$error-dark: color.scale($error, $lightness: -15%);
+
+$warning: #FFAA00;
+$warning-light: color.scale($warning, $lightness: +15%);
+$warning-dark: color.scale($warning, $lightness: -15%);
+
+$success: #00FFAA;
+$success-light: color.scale($success, $lightness: +15%);
+$success-dark: color.scale($success, $lightness: -15%);
+
+$black: #0A1A21;
+$white: #FFFFFF;
+$gray-light: #FFFFFF;
+$gray-medium: #FFFFFF;
+$gray-dark: #FFFFFF;
+
+$gray-100: color.scale($black, $lightness: +10%);
+$gray-200: color.scale($black, $lightness: +20%);
+$gray-300: color.scale($black, $lightness: +30%);
+$gray-400: color.scale($black, $lightness: +40%);
+$gray-500: #777777;
+$gray-600: color.scale($white, $lightness: -40%);
+$gray-700: color.scale($white, $lightness: -60%);
+$gray-800: color.scale($white, $lightness: -80%);
+$gray-900: color.scale($white, $lightness: -90%);
+
+$card-bg: rgba($black, 0.7);
+$border-color: rgba($primary, 0.2);
+$shadow-color: rgba($primary, 0.1);
+$highlight-color: rgba($primary, 0.05);
+
+$font-primary: 'Orbitron', sans-serif;
+$font-secondary: 'Montserrat', sans-serif;
+$font-mono: 'Roboto Mono', monospace;
+$font-size-base: 1rem;
+$font-size-md: 1.125rem;
+$font-size-sm: 0.875rem;
+$font-size-xs: 0.75rem;
+$font-size-xxs: 0.70rem;
+$font-size-xxxs: 0.625rem;
+$font-size-lg: 1.25rem;
+$font-size-xl: 1.5rem;
+$font-size-xxl: 1.75rem;
+$font-size-xxxl: 2rem;
+$line-height-base: 1.5;
+$line-height-tight: 1.25;
+
+$spacing-xxs: 0.20rem;
+$spacing-xs: 0.25rem;
+$spacing-sm: 0.5rem;
+$spacing-md: 1rem;
+$spacing-lg: 1.5rem;
+$spacing-xl: 2rem;
+$spacing-xxl: 3rem;
+
+$border-radius: 8px;
+$border-radius-sm: 6px;
+$border-radius-lg: 12px;
+$border-width: 1px;
+$border-width-thick: 2px;
+
+$shadow-sm: 0 0 15px $shadow-color;
+$shadow-md: 0 0 20px rgba($primary, 0.2);
+$shadow-lg: 0 0 30px rgba($primary, 0.3);
+$shadow-inner: inset 0 0 10px rgba($black, 0.5);
+
+$transition-fast: 0.15s ease;
+$transition-normal: 0.3s ease;
+$transition-slow: 0.5s ease;
+$transition-bounce: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+
+$z-index-below: -1;
+$z-index-base: 1;
+$z-index-above: 10;
+$z-index-sticky: 50;
+$z-index-modal: 100;
+$z-index-max: 9999;
+
+$breakpoint-xs: 480px;
+$breakpoint-sm: 768px;
+$breakpoint-md: 992px;
+$breakpoint-lg: 1200px;
+$breakpoint-xl: 1440px;
+
+$animation-duration-fast: 0.2s;
+$animation-duration-normal: 0.4s;
+$animation-duration-slow: 0.6s;
+$animation-timing: cubic-bezier(0.4, 0, 0.2, 1);
+
+$max-content-width: 1440px;
+$header-height: 60px;
+$sidebar-width: 240px;
+
+$glow-effects: (
+  'primary': (
+    'background': rgba($primary, 0.3),
+    'box-shadow': 0 0 20px 5px rgba($primary, 0.3),
+    'opacity': 0.4
+  ),
+  'income': (
+    'background': rgba($income, 0.3),
+    'box-shadow': 0 0 20px 5px rgba($income, 0.3),
+    'opacity': 0.4
+  ),
+  'expense': (
+    'background': rgba($expense, 0.3),
+    'box-shadow': 0 0 20px 5px rgba($expense, 0.3),
+    'opacity': 0.4
+  ),
+  'accent': (
+    'background': rgba($accent, 0.3),
+    'box-shadow': 0 0 20px 5px rgba($accent, 0.3),
+    'opacity': 0.4
+  )
+);
+
+$tooltip-bg: rgba($black, 0.9);
+$tooltip-border: $border-width solid $secondary;
+$tooltip-border-radius: $border-radius-sm;
+$tooltip-padding: $spacing-sm;
+$tooltip-shadow: $shadow-md;
+$tooltip-z-index: $z-index-above;
+$tooltip-font-size: $font-size-xs;

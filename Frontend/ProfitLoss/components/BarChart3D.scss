@@ -1,0 +1,121 @@
+@use '../../scss/components' as c;
+@use '../../scss/vars' as v;
+
+.bar-chart-3d {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  &__container {
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  &__background {
+    background: rgba(v.$secondary, 0.7);
+    backdrop-filter: blur(2px);
+    border-radius: v.$border-radius-sm;
+  }
+
+  &__grid {
+    &-line {
+      stroke: rgba(v.$primary-light, 0.5);
+      stroke-width: 0.5;
+      stroke-dasharray: 2, 2;
+
+      &--axis {
+        stroke: v.$primary;
+        stroke-width: 1.5;
+        stroke-dasharray: none;
+      }
+    }
+  }
+
+  &__bar {
+    transition: all 0.3s ease;
+    transform-origin: bottom center;
+
+    &:hover {
+      transform: scaleY(1.1);
+      filter: drop-shadow(0 0 5px rgba(v.$primary, 0.5));
+    }
+
+    &-material {
+      metalness: 0.7;
+      roughness: 0.3;
+      emissiveIntensity: 0.3;
+      transition: emissiveIntensity 0.3s ease;
+    }
+
+    &:hover &-material {
+      emissiveIntensity: 0.8;
+    }
+  }
+
+  &__label {
+    font-family: v.$font-primary;
+    fill: v.$white;
+    text-anchor: middle;
+    pointer-events: none;
+
+    &--y-axis {
+      text-anchor: end;
+      font-size: 0.8rem;
+      fill: v.$primary;
+    }
+
+    &--x-axis {
+      text-anchor: middle;
+      font-size: 0.8rem;
+      fill: v.$primary;
+      transform: rotate(-45deg);
+      transform-origin: 50% 50%;
+    }
+
+    &--value {
+      font-size: 0.9rem;
+      font-weight: bold;
+      text-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
+    }
+  }
+
+  &__axis {
+    stroke: v.$primary;
+    stroke-width: 2;
+  }
+
+  &__glow {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+
+    .bar-chart-3d__container:hover & {
+      opacity: 0.5;
+    }
+  }
+
+  &__bar-animate {
+    animation: barGrow v.$animation-duration-normal ease-out forwards;
+    transform-origin: bottom center;
+  }
+
+  @keyframes barGrow {
+    from {
+      transform: scaleY(0);
+    }
+    to {
+      transform: scaleY(1);
+    }
+  }
+
+  @media (max-width: 768px) {
+    &__label {
+      &--y-axis, &--x-axis {
+        font-size: 0.6rem;
+      }
+
+      &--value {
+        font-size: 0.7rem;
+      }
+    }
+  }
+}

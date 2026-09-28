@@ -1,0 +1,329 @@
+@use '../../scss/vars' as v;
+@use '../../scss/components' as c;
+
+.journal-entries-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: rgba(v.$black, 0.4);
+  border-radius: v.$border-radius;
+  overflow: hidden;
+  border: 1px solid rgba(v.$primary, 0.2);
+}
+
+.entries-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: v.$spacing-md;
+  border-bottom: 1px solid rgba(v.$primary, 0.2);
+  background: rgba(v.$black, 0.6);
+
+  h3 {
+    margin: 0;
+    color: v.$primary;
+    font-size: v.$font-size-sm;
+    text-transform: uppercase;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: v.$spacing-sm;
+
+    button {
+      @include c.button-reset;
+      padding: v.$spacing-xs v.$spacing-sm;
+      border-radius: v.$border-radius-sm;
+      font-size: v.$font-size-xxs;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all v.$transition-fast;
+      border: 1px solid transparent;
+    }
+
+    .post-btn {
+      border-color: v.$income;
+      color: v.$income;
+      &:hover:not(:disabled) {
+        background: rgba(v.$income, 0.1);
+        box-shadow: 0 0 8px rgba(v.$income, 0.3);
+      }
+      &:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+        border-color: v.$gray-light;
+        color: v.$gray-light;
+      }
+    }
+
+    .new-entry-btn {
+      @include c.button-primary;
+      background: v.$primary;
+      color: v.$black;
+      font-weight: bold;
+    }
+  }
+}
+
+.entries-list {
+  flex: 1;
+  overflow-y: auto;
+  @include c.custom-scrollbar;
+  
+  .table-header, .table-body {
+    display: grid;
+    grid-template-columns: 40px 100px 100px 1fr 1.5fr 100px 100px 80px 100px;
+    gap: v.$spacing-xs;
+    padding: v.$spacing-xs v.$spacing-md;
+    align-items: center;
+  }
+
+  .table-header {
+    position: sticky;
+    top: 0;
+    background: rgba(v.$black, 0.8);
+    backdrop-filter: blur(5px);
+    border-bottom: 1px solid rgba(v.$primary, 0.3);
+    z-index: 10;
+    
+    .header-cell {
+      color: v.$gray-light;
+      font-size: v.$font-size-xxs;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: bold;
+    }
+  }
+
+  .table-body {
+    .table-row {
+      display: contents; 
+      
+      > div {
+        padding: v.$spacing-xs v.$spacing-sm;
+        border-bottom: 1px solid rgba(v.$primary, 0.1);
+        color: v.$white;
+        font-size: v.$font-size-xs;
+        display: flex;
+        align-items: center;
+      }
+
+      &:hover > div {
+        background: rgba(v.$primary, 0.05);
+      }
+
+      &.draft > div { color: v.$warning; }
+      &.posted > div { color: v.$success; }
+      &.void > div { color: v.$error; text-decoration: line-through; }
+
+      .entry-number {
+        font-family: v.$font-mono;
+        color: v.$secondary;
+      }
+
+      .account-info {
+        display: flex;
+        flex-direction: column;
+        .account-code { font-family: v.$font-mono; font-size: v.$font-size-xxs; color: v.$gray-light; }
+        .account-name { color: v.$white; }
+      }
+
+      .description {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .debit, .credit {
+        font-family: v.$font-mono;
+        text-align: right;
+        justify-content: flex-end;
+      }
+      .debit { color: v.$income; }
+      .credit { color: v.$expense; }
+
+      .status-badge {
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: v.$font-size-xxs;
+        text-transform: uppercase;
+        background: rgba(v.$white, 0.1);
+        
+        &.draft { background: rgba(v.$warning, 0.2); color: v.$warning; }
+        &.posted { background: rgba(v.$success, 0.2); color: v.$success; }
+        &.void { background: rgba(v.$error, 0.2); color: v.$error; }
+      }
+
+      .actions {
+        display: flex;
+        gap: v.$spacing-xs;
+        justify-content: center;
+
+        .action-btn {
+          @include c.button-reset;
+          padding: 2px 8px;
+          border-radius: 4px;
+          font-size: v.$font-size-xxs;
+          cursor: pointer;
+          
+          &.post-btn {
+            background: v.$income;
+            color: v.$black;
+            &:hover { box-shadow: 0 0 8px rgba(v.$income, 0.4); }
+          }
+        }
+
+        .reconciled-status {
+          font-size: v.$font-size-xxs;
+          &.reconciled { color: v.$success; }
+        }
+      }
+      
+      .select-cell {
+        justify-content: center;
+        input[type="checkbox"] {
+          accent-color: v.$primary;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+.entries-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: v.$spacing-md;
+  background: rgba(v.$black, 0.6);
+  border-top: 1px solid rgba(v.$primary, 0.2);
+  gap: v.$spacing-md;
+
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: v.$font-size-xs;
+    
+    .summary-label { color: v.$gray-light; }
+    .summary-value { 
+      font-family: v.$font-mono; 
+      font-weight: bold;
+      &.unbalanced { color: v.$error; }
+      &.balanced { color: v.$success; }
+    }
+  }
+}
+
+.entry-form-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(v.$black, 0.85);
+  backdrop-filter: blur(5px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease-out;
+
+  .entry-form {
+    @include c.card-styles;
+    width: 500px;
+    background: rgba(v.$black, 0.9);
+    border: 1px solid v.$primary;
+    padding: v.$spacing-lg;
+
+    h4 {
+      color: v.$primary;
+      margin-bottom: v.$spacing-md;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: v.$spacing-sm;
+      margin-bottom: v.$spacing-md;
+    }
+
+    .form-group {
+      label {
+        display: block;
+        color: v.$gray-light;
+        font-size: v.$font-size-xxs;
+        margin-bottom: v.$spacing-xxs;
+        text-transform: uppercase;
+      }
+
+      input, select {
+        @include c.form-input;
+        background: rgba(v.$white, 0.05);
+        border-color: rgba(v.$primary, 0.3);
+        color: v.$white;
+        width: 100%;
+        
+        &:focus {
+          border-color: v.$primary;
+          box-shadow: 0 0 8px rgba(v.$primary, 0.2);
+        }
+      }
+      
+      &.amount-group {
+        .amount-toggle {
+          display: flex;
+          gap: v.$spacing-xs;
+          
+          .toggle-btn {
+            flex: 1;
+            padding: v.$spacing-xs;
+            background: rgba(v.$white, 0.05);
+            border: 1px solid rgba(v.$white, 0.2);
+            color: v.$gray-light;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: v.$font-size-xxs;
+            
+            &.active {
+              background: v.$primary;
+              color: v.$black;
+              border-color: v.$primary;
+              font-weight: bold;
+            }
+          }
+        }
+      }
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: v.$spacing-sm;
+      margin-top: v.$spacing-lg;
+
+      button {
+        @include c.button-reset;
+        padding: v.$spacing-xs v.$spacing-md;
+        border-radius: v.$border-radius-sm;
+        font-size: v.$font-size-xs;
+        cursor: pointer;
+      }
+
+      .cancel-btn {
+        background: transparent;
+        border: 1px solid v.$gray-light;
+        color: v.$gray-light;
+      }
+
+      .save-btn {
+        @include c.button-primary;
+        background: v.$primary;
+        color: v.$black;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

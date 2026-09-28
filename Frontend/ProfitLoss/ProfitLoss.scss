@@ -1,0 +1,188 @@
+// ProfitLoss.scss
+@use '../scss/components' as c;
+@use '../scss/vars' as v;
+
+.statement-detail {
+
+  &__container{
+    background: rgba(v.$black, 0.4);
+    height: 240px;
+    border: 1px solid v.$primary;
+    padding: 0.6rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    color: v.$white;
+    font-size: 0.8rem;
+    border-radius: 0.4rem;
+    @include c.custom-scrollbar;
+  }
+
+  &__line-items {
+    background: rgba(v.$black, 0.4);
+    color: v.$white;
+
+    h4 {
+      color: v.$primary;
+      font-size: 0.9rem;
+      margin: 0 0 0.6rem 0;
+      padding-bottom: 0.3rem;
+      border-bottom: 1px solid v.$primary;
+      text-align: center;
+    }
+
+    p {
+      text-align: center;
+      color: v.$white;
+      font-size: 0.8rem;
+    }
+  }
+
+  &__line-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.3rem 0;
+    border-bottom: 1px solid rgba(v.$primary, 0.3);
+    font-size: 0.75rem;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    span {
+      color: v.$white;
+    }
+  }
+}
+
+.profit-loss-panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: rgba(v.$black, 0.75);
+  border: 1px solid v.$primary;
+  border-radius: 6px;
+  overflow: hidden;
+  color: v.$white;
+  font-family: sans-serif;
+  padding: 0.3rem;
+  gap: 0.4rem;
+  margin: auto;
+  box-sizing: border-box;
+
+  &__content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+  }
+
+  &__kpi-rows {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    padding: 0;
+  }
+
+  &__kpi-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    padding: 0;
+  }
+
+  &__label {
+    font-size: 0.6rem;
+    color: v.$white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    width: max-content;
+  }
+
+  &__value {
+    font-family: v.$font-mono;
+    font-weight: bold;
+    font-size: 0.65rem;
+    margin-left: 0.1rem;
+    width: max-content;
+  }
+
+  &__subvalue {
+    font-family: v.$font-mono;
+    font-size: 0.6rem;
+    color: #aaa;
+    margin-top: 0.1rem;
+    width: max-content;
+  }
+
+  &__compare {
+    display: flex;
+    gap: 0.2rem;
+    padding-left: 0.3rem;
+    width: 100%;
+  }
+
+  &__tabs {
+    display: flex;
+    gap: 0.2rem;
+    justify-content: center;
+    width: 100%;
+    align-items: center;
+  }
+
+    &__tab {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: v.$white;
+    font-size: 0.8rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 2px;
+    cursor: pointer;
+    outline: none; 
+    transition: all 0.2s ease;
+    font-weight: normal;
+    box-shadow: none;
+
+    &.active {
+      border-bottom-color: v.$primary;
+      color: v.$white;
+      font-weight: bold;
+      background: transparent;
+    }
+
+    &:hover:not(.active) {
+      border-bottom-color: rgba(v.$primary, 0.5);
+    }
+
+    &:focus,
+    &:focus-visible {
+      outline: none;
+      border-bottom-color: v.$primary; 
+    }
+  }
+
+  &__growth-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    line-height: 1.4;
+    font-size: 0.9rem;
+    font-family: v.$font-mono;
+    width: max-content;
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  &__growth-item {
+    white-space: nowrap;
+    span {
+      font-family: v.$font-mono;
+    }
+  }
+}

@@ -1,0 +1,218 @@
+/* components/AgingChart.scss */
+@use '../../scss/vars' as v;
+
+.aging-chart-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: v.$spacing-md;
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-md;
+  transition: all 0.3s ease;
+  margin-top: 3rem;
+  
+  &:hover {
+    box-shadow: 0 0 30px rgba(v.$primary, 0.4);
+  }
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: v.$spacing-lg;
+  
+  .total-outstanding {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    
+    .label {
+      font-size: v.$font-size-xs;
+      color: v.$gray-light;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    
+    .value {
+      font-size: v.$font-size-lg;
+      font-weight: bold;
+      color: v.$primary;
+      font-family: v.$font-mono;
+    }
+  }
+  
+  .status-summary {
+    display: flex;
+    gap: v.$spacing-sm;
+    
+    .status-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      
+      .label {
+        font-size: v.$font-size-xxs;
+        color: v.$gray-light;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 2px;
+      }
+      
+      .value {
+        font-size: v.$font-size-xs;
+        font-weight: bold;
+        color: v.$primary;
+      }
+    }
+  }
+}
+
+.bar-chart {
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-md;
+  overflow-y: auto;
+  padding-right: v.$spacing-sm;
+  width: 100%;
+  justify-content: center;
+  
+  .bar-item {
+    display: flex;
+    align-items: center;
+    padding: v.$spacing-xs 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 10px rgba(v.$primary, 0.3);
+    }
+    
+    &.critical {
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 15px rgba(v.$error, 0.4);
+      }
+    }
+    
+    .bar-fill {
+      flex: 1;
+      height: 20px;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      filter: drop-shadow(0 0 2px currentColor);
+    }
+    
+    .bar-labels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      margin-left: v.$spacing-sm;
+      min-width: 8rem;
+      max-width: 8rem;
+      
+      .range {
+        font-size: v.$font-size-xs;
+        font-weight: bold;
+        color: v.$white;
+      }
+      
+      .count {
+        font-size: v.$font-size-xxs;
+        color: v.$gray-light;
+      }
+      
+      .amount {
+        font-size: v.$font-size-xs;
+        font-weight: bold;
+        color: v.$primary;
+      }
+      
+      .percentage {
+        font-size: v.$font-size-xxs;
+        color: v.$gray-light;
+      }
+    }
+  }
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: v.$spacing-lg;
+  margin-top: 8px;
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: v.$spacing-xs;
+    
+    .color-box {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    
+    span {
+      color: v.$gray-light;
+      font-size: v.$font-size-xxs;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-family: v.$font-primary;
+    }
+    
+    &:hover {
+      .color-box {
+        transform: scale(1.2);
+        box-shadow: 0 0 10px currentColor;
+      }
+      span {
+        color: v.$primary;
+      }
+    }
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .aging-chart-container {
+    padding: v.$spacing-sm;
+    
+    .chart-header {
+      flex-direction: column;
+      gap: v.$spacing-sm;
+      
+      .total-outstanding {
+        width: 100%;
+        text-align: center;
+      }
+      
+      .status-summary {
+        width: 100%;
+        flex-wrap: wrap;
+        gap: v.$spacing-sm;
+      }
+    }
+    
+    .bar-chart {
+      .bar-label {
+        min-width: 80px;
+      }
+    }
+    
+    .legend {
+      flex-wrap: wrap;
+      gap: v.$spacing-sm;
+      
+      .legend-item {
+        span {
+          font-size: v.$font-size-xxs;
+        }
+      }
+    }
+  }
+}

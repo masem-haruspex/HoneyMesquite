@@ -1,0 +1,107 @@
+@use '../../scss/components' as c;
+@use '../../scss/vars' as v;
+
+.pie-chart-3d {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  perspective: 1000px;
+
+  &__container {
+    position: relative;
+    transform-style: preserve-3d;
+    animation: rotate v.$animation-duration-normal * 4 linear infinite;
+  }
+
+  &__segment {
+    position: absolute;
+    transform-origin: center;
+    transition: all 0.3s ease;
+    backface-visibility: visible;
+
+    &:hover {
+      transform: scale(1.1);
+      filter: drop-shadow(0 0 8px rgba(v.$primary, 0.4));
+      z-index: 10;
+    }
+  }
+
+  &__segment-material {
+    metalness: 0.7;
+    roughness: 0.3;
+    emissiveIntensity: 0.3;
+    transition: all 0.3s ease;
+
+    .pie-chart-3d__segment:hover & {
+      emissiveIntensity: 0.8;
+    }
+  }
+
+  &__label {
+    position: absolute;
+    font-family: v.$font-primary;
+    color: v.$white;
+    text-align: center;
+    pointer-events: none;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+    transform: translateZ(10px);
+    transition: all 0.3s ease;
+
+    &-container {
+      position: absolute;
+      transform-style: preserve-3d;
+    }
+  }
+
+  &__center-cap {
+    position: absolute;
+    border-radius: 50%;
+    background: v.$primary;
+    box-shadow: 0 0 15px rgba(v.$primary, 0.5);
+    z-index: 5;
+  }
+
+  &__glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle at center,
+      rgba(v.$primary-light, 0.2) 0%,
+      transparent 70%
+    );
+    opacity: 0.5;
+    z-index: -1;
+  }
+
+  @keyframes rotate {
+    from {
+      transform: rotateY(0);
+    }
+    to {
+      transform: rotateY(360deg);
+    }
+  }
+
+  @keyframes segment-grow {
+    from {
+      transform: scale(0) rotateY(0);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1) rotateY(0);
+      opacity: 1;
+    }
+  }
+
+  @media (max-width: 768px) {
+    &__label {
+      font-size: 0.7rem;
+    }
+
+    &__segment:hover {
+      transform: scale(1.05);
+    }
+  }
+}

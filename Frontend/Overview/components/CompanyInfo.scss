@@ -1,0 +1,152 @@
+// Overview/components/CompanyInfo.scss
+@use '../../scss/vars' as v;
+@use '../../scss/components' as c;
+
+.company-info-container {
+  height: 100%;
+  overflow-y: auto;
+  padding: v.$spacing-sm;
+
+  @include c.custom-scrollbar;
+
+  .company-header {
+    text-align: center;
+    margin-bottom: v.$spacing-lg;
+
+    .company-name {
+      margin: 0;
+      font-size: v.$font-size-xxl;
+      color: v.$primary;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(v.$primary, 0.5);
+
+      &::before {
+        content: '';
+        display: block;
+        width: 60px;
+        height: 2px;
+        background: v.$primary;
+        margin: v.$spacing-xs auto;
+        box-shadow: 0 0 8px v.$primary;
+      }
+    }
+
+    .company-subheader {
+      display: flex;
+      justify-content: center;
+      gap: v.$spacing-lg;
+      font-size: v.$font-size-md;
+      color: v.$gray-light;
+
+      .ticker {
+        color: v.$accent;
+        font-weight: bold;
+      }
+
+      .industry {
+        color: v.$secondary;
+      }
+    }
+  }
+
+  .company-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: v.$spacing-md;
+    margin-bottom: v.$spacing-xl;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .info-section {
+    h3 {
+      margin: 0 0 v.$spacing-sm 0;
+      font-size: v.$font-size-lg;
+      color: v.$primary;
+      letter-spacing: 1px;
+    }
+
+    .info-grid {
+      display: flex;
+      flex-direction: column;
+      gap: v.$spacing-xs;
+
+      .info-item {
+        display: flex;
+        justify-content: space-between;
+        font-size: v.$font-size-sm;
+
+        label {
+          color: v.$gray-light;
+          min-width: 160px;
+        }
+
+        span, a {
+          color: v.$white;
+          text-align: right;
+          flex: 1;
+
+          &.income {
+            color: v.$income;
+            font-weight: bold;
+          }
+
+          &.accent {
+            color: v.$accent;
+          }
+        }
+
+        a {
+          text-decoration: none;
+          transition: color v.$transition-fast;
+
+          &:hover {
+            color: v.$primary;
+            text-shadow: 0 0 5px rgba(v.$primary, 0.6);
+          }
+        }
+      }
+    }
+
+    .metric-bars {
+      display: flex;
+      flex-direction: column;
+      gap: v.$spacing-sm;
+
+      .metric-bar {
+        label {
+          display: block;
+          color: v.$gray-light;
+          font-size: v.$font-size-xs;
+          margin-bottom: v.$spacing-xxs;
+        }
+
+        .bar-track {
+          width: 100%;
+          height: 6px;
+          background: rgba(v.$white, 0.1);
+          border-radius: 3px;
+          overflow: hidden;
+          margin-bottom: v.$spacing-xxs;
+
+          .bar-fill {
+            height: 100%;
+            width: 0%;
+            background: v.$primary;
+            border-radius: 3px;
+            transition: width 1.2s ease;
+            box-shadow: 0 0 6px currentColor;
+          }
+        }
+
+        span {
+          font-size: v.$font-size-xs;
+          color: v.$gray-light;
+        }
+      }
+    }
+  }
+}

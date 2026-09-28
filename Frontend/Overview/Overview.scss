@@ -1,0 +1,143 @@
+// Overview.scss
+@use '../scss/vars' as v;
+@use '../scss/components' as c;
+
+.overview-wrapper {
+  pointer-events: none;
+}
+
+.overview-container {
+  @include c.mm_container;
+
+  width: 850px;
+  height: 600px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  .glow-effect {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: radial-gradient(circle at 50% 30%, rgba(v.$primary, 0.4), transparent 70%);
+    filter: blur(6px);
+    opacity: 0.3;
+  }
+
+  .overview-header {
+    text-align: center;
+    margin-bottom: v.$spacing-md;
+    padding-bottom: v.$spacing-sm;
+    border-bottom: 1px solid rgba(v.$primary, 0.3);
+
+    .overview-title {
+      margin: v.$spacing-xs 0;
+      font-size: v.$font-size-xl;
+      color: v.$primary;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(v.$primary, 0.5);
+    }
+
+    .overview-tabs {
+      display: flex;
+      justify-content: center;
+      gap: v.$spacing-lg;
+      margin-top: v.$spacing-sm;
+
+      .tab-button {
+        @include c.civ-glow-active;
+        padding: v.$spacing-xs v.$spacing-lg;
+        background: transparent;
+        border: 1px solid transparent;
+        color: v.$gray-light;
+        font-size: v.$font-size-sm;
+        font-family: v.$font-primary;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: all v.$transition-normal;
+        border-radius: v.$border-radius-sm;
+        min-width: 150px;
+
+        &:focus {
+          outline: none;
+        }
+
+        &.active {
+          background: rgba(v.$primary, 0.15);
+          border-color: v.$primary;
+          color: v.$primary;
+          box-shadow: 0 0 10px rgba(v.$primary, 0.3);
+        }
+
+        &:hover:not(.active) {
+          background: rgba(v.$primary, 0.05);
+          border-color: rgba(v.$primary, 0.3);
+          color: v.$primary;
+        }
+      }
+    }
+  }
+
+  .overview-content {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+
+    .overview-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: v.$primary;
+      font-family: v.$font-primary;
+
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(v.$primary, 0.3);
+        border-top: 3px solid v.$primary;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: v.$spacing-md;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    }
+  }
+
+  .overview-footer {
+    padding-top: v.$spacing-md;
+    font-size: v.$font-size-xxs;
+    color: v.$gray-light;
+    text-align: right;
+    border-top: 1px solid rgba(v.$primary, 0.2);
+  }
+}
+
+@media (max-width: 768px) {
+  .overview-container {
+    width: 95vw;
+    height: 90vh;
+    padding: v.$spacing-sm;
+
+    .overview-header {
+      .overview-tabs {
+        flex-direction: column;
+        gap: v.$spacing-xs;
+
+        .tab-button {
+          min-width: auto;
+          width: 100%;
+          padding: v.$spacing-xs;
+        }
+      }
+    }
+  }
+}

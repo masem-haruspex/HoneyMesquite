@@ -1,0 +1,53 @@
+// department-form.scss
+@use '../../scss/vars.scss' as v;
+@use '../../scss/components.scss' as c;
+
+.department-form {
+  &__container {
+    @include c.card-styles;
+    width: 400px;
+    backdrop-filter: blur(5px);
+    background: rgba(v.$card-bg, 0.9);
+  }
+
+  &__input-group {
+    margin-bottom: v.$spacing-md;
+  }
+
+  &__label {
+    display: block;
+    color: v.$gray-light;
+    font-size: v.$font-size-xs;
+    margin-bottom: v.$spacing-xxs;
+  }
+
+  &__input {
+    @include c.form-input;
+    background: rgba(v.$white, 0.1);
+  }
+
+  &__error {
+    color: v.$error;
+    font-size: v.$font-size-xxs;
+    margin-top: v.$spacing-xxs;
+  }
+
+  &__button {
+    @include c.button-primary;
+    width: c.$full-width;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: v.$font-size-xs;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &:hover:not(:disabled) {
+      background: rgba(v.$primary, 0.4);
+      border-color: v.$accent;
+      box-shadow: 0 0 10px rgba(v.$accent, 0.5);
+    }
+  }
+}

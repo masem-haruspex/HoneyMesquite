@@ -1,0 +1,413 @@
+@use '../../scss/vars' as v;
+@use '../../scss/components' as c;
+
+.bank-reconciliation-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: rgba(v.$black, 0.4);
+  border-radius: v.$border-radius;
+  overflow: hidden;
+  border: 1px solid rgba(v.$primary, 0.2);
+}
+
+.reconciliation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: v.$spacing-md;
+  border-bottom: 1px solid rgba(v.$primary, 0.2);
+  background: rgba(v.$black, 0.6);
+
+  .bank-info {
+    h3 {
+      margin: 0 0 v.$spacing-xxs 0;
+      color: v.$primary;
+      font-size: v.$font-size-sm;
+      text-transform: uppercase;
+    }
+
+    .bank-details {
+      display: flex;
+      gap: v.$spacing-sm;
+      font-size: v.$font-size-xxs;
+      color: v.$gray-light;
+      
+      .current-balance {
+        color: v.$white;
+        font-family: v.$font-mono;
+        font-weight: bold;
+        margin-left: v.$spacing-sm;
+      }
+    }
+  }
+
+  .header-actions {
+    display: flex;
+    gap: v.$spacing-sm;
+
+    button {
+      @include c.button-reset;
+      padding: v.$spacing-xs v.$spacing-sm;
+      border-radius: v.$border-radius-sm;
+      font-size: v.$font-size-xxs;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all v.$transition-fast;
+      border: 1px solid transparent;
+    }
+
+    .upload-btn {
+      background: rgba(v.$income, 0.1);
+      border-color: v.$income;
+      color: v.$income;
+      &:hover { background: rgba(v.$income, 0.2); }
+    }
+
+    .refresh-btn {
+      background: rgba(v.$primary, 0.1);
+      border-color: v.$primary;
+      color: v.$primary;
+      &:hover { background: rgba(v.$primary, 0.2); }
+    }
+  }
+}
+
+.reconciliation-content {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: v.$spacing-md;
+  padding: v.$spacing-md;
+  overflow: hidden;
+}
+
+.statements-panel, .matching-panel {
+  display: flex;
+  flex-direction: column;
+  background: rgba(v.$black, 0.3);
+  border: 1px solid rgba(v.$primary, 0.1);
+  border-radius: v.$border-radius;
+  overflow: hidden;
+
+  h4 {
+    margin: 0;
+    padding: v.$spacing-sm v.$spacing-md;
+    background: rgba(v.$primary, 0.05);
+    border-bottom: 1px solid rgba(v.$primary, 0.1);
+    color: v.$gray-light;
+    font-size: v.$font-size-xs;
+    text-transform: uppercase;
+  }
+}
+
+.statements-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: v.$spacing-sm;
+  @include c.custom-scrollbar;
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-sm;
+}
+
+.statement-item {
+  padding: v.$spacing-sm;
+  background: rgba(v.$black, 0.5);
+  border: 1px solid rgba(v.$white, 0.1);
+  border-radius: v.$border-radius-sm;
+  cursor: pointer;
+  transition: all v.$transition-fast;
+
+  &:hover {
+    border-color: rgba(v.$primary, 0.3);
+    background: rgba(v.$primary, 0.05);
+  }
+
+  &.selected {
+    border-color: v.$primary;
+    background: rgba(v.$primary, 0.1);
+    box-shadow: 0 0 10px rgba(v.$primary, 0.2);
+  }
+
+  .statement-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: v.$spacing-xs;
+    
+    .statement-date {
+      color: v.$white;
+      font-weight: bold;
+      font-size: v.$font-size-xs;
+    }
+    
+    .statement-status {
+      font-size: v.$font-size-xxs;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      
+      &.pending { background: rgba(v.$warning, 0.2); color: v.$warning; }
+      &.processing { background: rgba(v.$primary, 0.2); color: v.$primary; }
+      &.reconciled { background: rgba(v.$success, 0.2); color: v.$success; }
+      &.error { background: rgba(v.$error, 0.2); color: v.$error; }
+    }
+  }
+
+  .statement-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: v.$spacing-xs;
+    font-size: v.$font-size-xxs;
+    color: v.$gray-light;
+    margin-bottom: v.$spacing-xs;
+
+    .detail-value {
+      color: v.$white;
+      font-family: v.$font-mono;
+      text-align: right;
+    }
+  }
+
+  .reconciled-badge {
+    text-align: center;
+    color: v.$success;
+    font-size: v.$font-size-xxs;
+    font-weight: bold;
+    padding: v.$spacing-xxs;
+    background: rgba(v.$success, 0.1);
+    border-radius: 4px;
+  }
+
+  .reconcile-btn {
+    width: 100%;
+    padding: v.$spacing-xs;
+    background: v.$primary;
+    color: v.$black;
+    border: none;
+    border-radius: 4px;
+    font-size: v.$font-size-xxs;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    
+    &:hover {
+      box-shadow: 0 0 8px rgba(v.$primary, 0.4);
+    }
+  }
+}
+
+.upload-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(v.$black, 0.85);
+  backdrop-filter: blur(5px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .upload-form {
+    @include c.card-styles;
+    width: 400px;
+    background: rgba(v.$black, 0.9);
+    border: 1px solid v.$primary;
+    padding: v.$spacing-lg;
+
+    h4 {
+      color: v.$primary;
+      margin-bottom: v.$spacing-md;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: v.$spacing-md;
+      
+      label {
+        display: block;
+        color: v.$gray-light;
+        font-size: v.$font-size-xxs;
+        margin-bottom: v.$spacing-xxs;
+        text-transform: uppercase;
+      }
+
+      input[type="file"], input[type="date"] {
+        @include c.form-input;
+        background: rgba(v.$white, 0.05);
+        border: 1px solid rgba(v.$primary, 0.3);
+        color: v.$white;
+        width: 100%;
+      }
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: v.$spacing-sm;
+
+      button {
+        @include c.button-reset;
+        padding: v.$spacing-xs v.$spacing-md;
+        border-radius: v.$border-radius-sm;
+        font-size: v.$font-size-xs;
+        cursor: pointer;
+      }
+
+      .cancel-btn {
+        background: transparent;
+        border: 1px solid v.$gray-light;
+        color: v.$gray-light;
+      }
+
+      .upload-btn {
+        @include c.button-primary;
+        background: v.$income;
+        color: v.$black;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+.reconciliation-in-progress {
+  padding: v.$spacing-md;
+  
+  .reconciliation-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: v.$spacing-md;
+    margin-bottom: v.$spacing-lg;
+    padding: v.$spacing-md;
+    background: rgba(v.$black, 0.5);
+    border-radius: v.$border-radius;
+
+    .summary-row {
+      display: flex;
+      flex-direction: column;
+      
+      .summary-label {
+        color: v.$gray-light;
+        font-size: v.$font-size-xxs;
+        text-transform: uppercase;
+      }
+      
+      .summary-value {
+        font-family: v.$font-mono;
+        font-weight: bold;
+        font-size: v.$font-size-sm;
+        
+        &.error { color: v.$error; }
+        &.success { color: v.$success; }
+      }
+    }
+  }
+
+  .unreconciled-items {
+    max-height: 300px;
+    overflow-y: auto;
+    @include c.custom-scrollbar;
+
+    .items-list {
+      display: flex;
+      flex-direction: column;
+      gap: v.$spacing-xs;
+    }
+
+    .unreconciled-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: v.$spacing-sm;
+      background: rgba(v.$black, 0.5);
+      border: 1px solid rgba(v.$white, 0.1);
+      border-radius: v.$border-radius-sm;
+
+      .item-header {
+        display: flex;
+        flex-direction: column;
+        .entry-date { color: v.$gray-light; font-size: v.$font-size-xxs; }
+        .entry-number { color: v.$secondary; font-family: v.$font-mono; font-size: v.$font-size-xs; }
+      }
+
+      .item-details {
+        flex: 1;
+        margin: 0 v.$spacing-md;
+        .item-description { color: v.$white; font-size: v.$font-size-xs; display: block; }
+        .item-amount { 
+          font-family: v.$font-mono; 
+          font-size: v.$font-size-xs; 
+          &.debit { color: v.$income; }
+          &.credit { color: v.$expense; }
+        }
+      }
+
+      .match-btn {
+        @include c.button-primary;
+        padding: v.$spacing-xxs v.$spacing-sm;
+        font-size: v.$font-size-xxs;
+        background: v.$primary;
+        color: v.$black;
+      }
+    }
+  }
+
+  .reconciliation-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: v.$spacing-md;
+    margin-top: v.$spacing-lg;
+    padding-top: v.$spacing-md;
+    border-top: 1px solid rgba(v.$primary, 0.2);
+
+    button {
+      @include c.button-reset;
+      padding: v.$spacing-xs v.$spacing-lg;
+      border-radius: v.$border-radius-sm;
+      font-size: v.$font-size-xs;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+
+    .cancel-btn {
+      border: 1px solid v.$error;
+      color: v.$error;
+      background: transparent;
+    }
+
+    .complete-btn {
+      @include c.button-primary;
+      background: v.$success;
+      color: v.$black;
+      font-weight: bold;
+    }
+  }
+}
+
+.reconciliation-instructions {
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  color: v.$gray-light;
+  font-size: 0.75rem;
+
+  ol {
+    text-align: left;
+    display: inline-block;
+    margin-top: 0;
+    li { margin-bottom: v.$spacing-xs; }
+  }
+
+  .current-status {
+    margin-top: v.$spacing-lg;
+    display: flex;
+    justify-content: center;
+    gap: v.$spacing-lg;
+    
+    .status-item {
+      display: flex;
+      flex-direction: column;
+      .status-label { color: v.$gray-light; font-size: v.$font-size-xxs; text-transform: uppercase; }
+      .status-value { color: v.$primary; font-family: v.$font-mono; font-weight: bold; }
+    }
+  }
+}

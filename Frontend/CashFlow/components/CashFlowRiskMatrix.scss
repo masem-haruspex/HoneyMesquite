@@ -1,0 +1,560 @@
+@use '../../scss/components' as c;
+@use '../../scss/vars' as v;
+
+.cash-flow-risk-matrix {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  color: v.$white;
+  font-family: v.$font-primary;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: v.$spacing-md;
+  padding: v.$spacing-md;
+  background: transparent;
+  border-radius: v.$border-radius;
+
+  .header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: v.$spacing-sm;
+
+    h1 {
+      margin: 0;
+      font-size: v.$font-size-lg;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: v.$primary;
+      text-shadow: 0 0 10px rgba(v.$primary, 0.3);
+
+      &::after {
+        content: '';
+        display: block;
+        width: 100px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, v.$primary, transparent);
+        margin: v.$spacing-xs auto 0;
+      }
+    }
+  }
+
+  .controls {
+    display: flex;
+    gap: v.$spacing-xs;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .time-range-selector {
+    display: flex;
+    gap: v.$spacing-xs;
+  }
+
+  .time-btn {
+    padding: v.$spacing-xs v.$spacing-md;
+    background: transparent;
+    border: 1px solid v.$primary-alpha-20;
+    border-radius: v.$border-radius-sm;
+    color: v.$gray-light;
+    font-size: v.$font-size-xxs;
+    font-family: v.$font-primary;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all v.$transition-normal;
+    min-width: 40px;
+
+    &:hover {
+      background: rgba(v.$primary, 0.1);
+      border-color: v.$primary;
+      color: v.$white;
+    }
+
+    &.active {
+      background: rgba(v.$primary, 0.3);
+      border-color: v.$primary;
+      color: v.$white;
+      box-shadow: 0 0 10px rgba(v.$primary, 0.3);
+    }
+  }
+
+  .view-toggle {
+    display: flex;
+    gap: v.$spacing-xs;
+  }
+
+  .view-btn {
+    padding: v.$spacing-xs v.$spacing-md;
+    background: transparent;
+    border: 1px solid v.$primary-alpha-20;
+    border-radius: v.$border-radius-sm;
+    color: v.$gray-light;
+    font-size: v.$font-size-xxs;
+    font-family: v.$font-primary;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all v.$transition-normal;
+    min-width: 60px;
+
+    &:hover {
+      background: rgba(v.$primary, 0.1);
+      border-color: v.$primary;
+      color: v.$white;
+    }
+
+    &.active {
+      background: rgba(v.$primary, 0.3);
+      border-color: v.$primary;
+      color: v.$white;
+      box-shadow: 0 0 10px rgba(v.$primary, 0.3);
+    }
+  }
+
+  .matrix-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: v.$spacing-md;
+    height: 100%;
+  }
+
+    .matrix-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: v.$spacing-md;
+    height: 100%;
+  }
+
+  .matrix-grid {
+    @include c.card-styles;
+    background: rgba(v.$black, 0.6);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(v.$primary, 0.3);
+    border-radius: v.$border-radius;
+    padding: v.$spacing-md;
+    overflow: auto;
+  }
+
+  .grid-container {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: v.$spacing-sm;
+    position: relative;
+    margin: 0 auto;
+    max-width: 800px;
+  }
+
+  .y-axis-labels {
+    grid-column: 1;
+    grid-row: 2;
+    display: grid;
+    grid-template-rows: repeat(5, 1fr);
+    gap: v.$spacing-xs;
+    padding-right: v.$spacing-sm;
+    text-align: right;
+
+    div {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      height: 100%;
+      font-size: v.$font-size-xxs;
+      color: v.$gray-light;
+      font-weight: 500;
+    }
+  }
+
+  .x-axis-labels {
+    grid-column: 2;
+    grid-row: 3;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: v.$spacing-xs;
+    padding-top: v.$spacing-sm;
+
+    div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: v.$font-size-xxs;
+      color: v.$gray-light;
+      font-weight: 500;
+    }
+  }
+
+  .y-axis-title {
+    grid-column: 1;
+    grid-row: 2;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    text-align: center;
+    font-size: v.$font-size-xs;
+    color: v.$primary;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    justify-self: end;
+    margin: 0;
+    transform: translateX(9px);
+  }
+
+  .x-axis-title {
+    grid-column: 2;
+    grid-row: 3;
+    text-align: center;
+    font-size: v.$font-size-xs;
+    color: v.$primary;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: v.$spacing-sm;
+    transform: translateY(-14px);
+  }
+
+  .risk-cells {
+    grid-column: 2;
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap: 2px;
+    background-color: rgba(v.$primary, 0.1);
+    border: 1px solid rgba(v.$primary, 0.3);
+    border-radius: v.$border-radius-sm;
+    overflow: hidden;
+  }
+
+  .risk-cell {
+    position: relative;
+    background: rgba(v.$black, 0.4);
+    border: 1px solid rgba(v.$primary, 0.2);
+    height: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: v.$spacing-xs;
+
+    &:hover {
+      background: rgba(v.$primary, 0.2);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    &.has-risk {
+      background: rgba(v.$primary, 0.1);
+      border-color: rgba(v.$primary, 0.4);
+    }
+
+    &.selected {
+      background: rgba(v.$primary, 0.3);
+      border: 2px solid v.$primary;
+      box-shadow: 0 0 15px rgba(v.$primary, 0.5);
+      z-index: 2;
+    }
+
+    $risk-colors: (
+      high-impact: rgba(v.$error, 0.3),
+      high-likelihood: rgba(v.$warning, 0.3),
+      medium: rgba(v.$primary, 0.2),
+      low: rgba(v.$success, 0.2)
+    );
+
+    .risk-count {
+      font-size: v.$font-size-lg;
+      font-weight: bold;
+      color: v.$white;
+      margin-bottom: v.$spacing-xxs;
+    }
+
+    .risk-names {
+      font-size: v.$font-size-xxs;
+      color: v.$gray-light;
+      text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+  }
+
+
+  .risk-details {
+    @include c.card-styles;
+    position: relative;
+    background: rgba(v.$black, 0.6);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(v.$primary, 0.3);
+    border-radius: v.$border-radius;
+    padding: v.$spacing-md;
+
+    .details-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: v.$spacing-sm;
+      border-bottom: 1px solid rgba(v.$primary, 0.2);
+      padding-bottom: v.$spacing-sm;
+
+      .risk-name {
+        color: v.$primary;
+        font-size: v.$font-size-md;
+        margin: 0;
+      }
+
+      .close-btn {
+        @include c.button-reset;
+        font-size: v.$font-size-md;
+        color: v.$gray-light;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all 0.2s ease;
+
+        &:hover {
+          color: v.$white;
+          background: rgba(v.$primary, 0.3);
+        }
+      }
+    }
+
+    .risk-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: v.$spacing-md;
+
+      .risk-visualization {
+        display: flex;
+        flex-direction: column;
+        gap: v.$spacing-md;
+
+        .risk-radar {
+          width: 100%;
+          height: 200px;
+
+          .recharts-polar-grid-angle line {
+            stroke: rgba(v.$primary, 0.2);
+          }
+
+          .recharts-polar-angle-axis-tick-value {
+            fill: v.$white;
+            font-size: v.$font-size-xxs;
+          }
+
+          .recharts-polar-radius-axis-tick-value {
+            fill: v.$gray-light;
+            font-size: v.$font-size-xxs;
+          }
+        }
+      }
+
+      .risk-scores {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: v.$spacing-sm;
+
+        .score {
+          @include c.card-styles;
+          padding: v.$spacing-sm;
+          background: rgba(v.$black, 0.3);
+          border-radius: v.$border-radius-sm;
+          text-align: center;
+
+          .label {
+            font-size: v.$font-size-xxs;
+            color: v.$gray-light;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: v.$spacing-xxs;
+          }
+
+          .value {
+            font-size: v.$font-size-sm;
+            font-family: v.$font-mono;
+            color: v.$primary;
+          }
+        }
+      }
+      .risk-mitigation-editor {
+  @include c.card-styles;
+  background: rgba(v.$black, 0.3);
+  border: 1px solid rgba(v.$primary, 0.2);
+  border-radius: v.$border-radius;
+  padding: v.$spacing-md;
+
+  h4 {
+    color: v.$primary;
+    font-size: v.$font-size-xs;
+    margin: 0 0 v.$spacing-sm 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: v.$spacing-sm;
+    background: rgba(v.$black, 0.5);
+    border: 1px solid rgba(v.$primary, 0.3);
+    border-radius: v.$border-radius-sm;
+    color: v.$white;
+    font-family: v.$font-primary;
+    font-size: v.$font-size-xs;
+    margin-bottom: v.$spacing-sm;
+    resize: vertical;
+
+    &:focus {
+      outline: none;
+      border-color: v.$primary;
+      box-shadow: 0 0 10px rgba(v.$primary, 0.2);
+    }
+
+    &::placeholder {
+      color: v.$gray-light;
+    }
+  }
+
+  .save-btn {
+    @include c.button-primary;
+    width: 100%;
+    padding: v.$spacing-xs;
+    font-size: v.$font-size-xs;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: rgba(v.$primary, 0.2);
+    border: 1px solid v.$primary;
+    color: v.$primary;
+    border-radius: v.$border-radius-sm;
+    cursor: pointer;
+    transition: all v.$transition-normal;
+
+    &:hover {
+      background: rgba(v.$primary, 0.3);
+      box-shadow: 0 0 10px rgba(v.$primary, 0.3);
+    }
+  }
+}
+    }
+  }
+
+  .risk-legend {
+    @include c.card-styles;
+    position: relative;
+    padding: v.$spacing-md;
+    background: rgba(v.$black, 0.6);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(v.$primary, 0.3);
+    border-radius: v.$border-radius;
+
+    .legend-title {
+      font-size: v.$font-size-sm;
+      color: v.$primary;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: v.$spacing-md;
+    }
+
+    .legend-items {
+      display: flex;
+      flex-direction: column;
+      gap: v.$spacing-xs;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: v.$spacing-xs;
+
+      .legend-color {
+        width: 12px;
+        height: 12px;
+        border-radius: 2px;
+      }
+
+      .legend-label {
+        font-size: v.$font-size-xxs;
+        color: v.$gray-light;
+      }
+    }
+  }
+
+  .no-risk-selected {
+    text-align: center;
+    color: v.$gray-light;
+    font-style: italic;
+    margin-bottom: v.$spacing-md;
+
+    .message {
+      margin-bottom: v.$spacing-md;
+    }
+  }
+}
+
+.risk-mitigation-editor {
+  @include c.card-styles;
+  background: rgba(v.$black, 0.3);
+  border: 1px solid rgba(v.$primary, 0.2);
+  border-radius: v.$border-radius;
+  padding: v.$spacing-md;
+
+  h4 {
+    color: v.$primary;
+    font-size: v.$font-size-xs;
+    margin: 0 0 v.$spacing-sm 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: v.$spacing-sm;
+    background: rgba(v.$black, 0.5);
+    border: 1px solid rgba(v.$primary, 0.3);
+    border-radius: v.$border-radius-sm;
+    color: v.$white;
+    font-family: v.$font-primary;
+    font-size: v.$font-size-xs;
+    margin-bottom: v.$spacing-sm;
+    resize: vertical;
+
+    &:focus {
+      outline: none;
+      border-color: v.$primary;
+      box-shadow: 0 0 10px rgba(v.$primary, 0.2);
+    }
+
+    &::placeholder {
+      color: v.$gray-light;
+    }
+  }
+
+  .save-btn {
+    @include c.button-primary;
+    width: 100%;
+    padding: v.$spacing-xs;
+    font-size: v.$font-size-xs;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: rgba(v.$primary, 0.2);
+    border: 1px solid v.$primary;
+    color: v.$primary;
+    border-radius: v.$border-radius-sm;
+    cursor: pointer;
+    transition: all v.$transition-normal;
+
+    &:hover {
+      background: rgba(v.$primary, 0.3);
+      box-shadow: 0 0 10px rgba(v.$primary, 0.3);
+    }
+  }
+}

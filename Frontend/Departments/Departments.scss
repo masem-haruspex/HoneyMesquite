@@ -1,0 +1,217 @@
+// Department.scss
+@use '../scss/components' as c;
+@use '../scss/vars' as v;
+
+.department {
+  &-list {
+     &__scroll-container {
+      width: c.$full-width;
+      height: c.$full-height;
+      overflow-y: auto;
+      @include c.custom-scrollbar;
+      position: relative; 
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    &__item-container {
+      position: relative;
+      margin-bottom: c.$list-item-margin;
+      width: c.$list-item-width;
+      height: c.$list-item-height;
+      margin-left: v.$spacing-xs;
+      margin-top: v.$spacing-xs;
+      cursor: pointer;
+
+      .glow-effect {
+        position: absolute;
+        top: 25px;
+        left: -5px;
+        right: -5px;
+        bottom: -5px;
+        z-index: -1;
+        opacity: 0;
+        transform: scaleY(2);
+        transition: opacity 0.3s ease;
+      }
+
+      &:hover {
+        .department-list__delete-btn {
+          opacity: 1;
+        }
+
+        .glow-effect {
+          opacity: 0.4;
+          background: radial-gradient(
+            circle at center,
+            rgba(v.$secondary, 0.8) 0%,
+            rgba(v.$secondary, 0) 70%
+          );
+          box-shadow: 0 0 20px 5px rgba(v.$primary, 0.3);
+          filter: blur(3px);
+        }
+      }
+    }
+
+    &__card {
+      @include c.card-styles;
+      height: c.$full-height;
+      color: v.$white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      z-index: 1; 
+
+      &:hover {
+        border-color: v.$primary;
+      }
+    }
+
+    &__delete-btn {
+      @include c.delete-button;
+    }
+
+    &__header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: v.$spacing-xs;
+    }
+
+    &__name {
+      font-weight: bold;
+      font-size: v.$font-size-sm;
+      color: v.$primary;
+      white-space: #{c.$text-ellipsis};
+      max-width: 180px;
+    }
+
+    &__efficiency {
+      font-size: v.$font-size-xs;
+      white-space: nowrap;
+      font-weight: bold;
+    }
+
+    &__footer {
+      display: flex;
+      justify-content: space-between;
+      font-size: v.$font-size-xxs;
+      color: v.$gray-light;
+
+      span {
+        white-space: #{c.$text-ellipsis};
+        max-width: 140px;
+      }
+    }
+  }
+
+  &-detail {
+    &__info {
+      @include c.card-styles;
+      border-left: c.$detail-panel-border;
+      width: c.$detail-panel-width;
+      position: relative;
+
+    }
+
+    &__row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: v.$spacing-xs;
+      font-size: v.$font-size-sm;
+    }
+
+    &__label {
+      color: c.$detail-label-color;
+      white-space: #{c.$text-ellipsis};
+      max-width: 140px;
+    }
+
+    &__value {
+      color: c.$detail-value-color;
+      white-space: #{c.$text-ellipsis};
+      max-width: 160px;
+      text-align: right;
+    }
+  }
+
+  &-nav {
+    &__back-btn,
+    &__add-btn {
+      @include c.button-primary;
+      font-family: v.$font-primary;
+      font-size: v.$font-size-base;
+      white-space: nowrap;
+      padding: v.$spacing-sm v.$spacing-md;
+
+      &:hover {
+        border-color: v.$accent;
+        box-shadow: c.$button-primary-hover-shadow;
+      }
+    }
+
+    &__back-btn {
+      margin-bottom: v.$spacing-sm;
+      border-radius: v.$border-radius;
+    }
+  }
+
+  &-form {
+    &__container {
+      @include c.card-styles;
+      width: 400px;
+      backdrop-filter: blur(5px);
+      background: rgba(c.$card-bg, 0.9);
+    }
+
+    &__input-group {
+      margin-bottom: v.$spacing-md;
+    }
+
+    &__label {
+      display: block;
+      color: v.$gray-light;
+      font-size: v.$font-size-xs;
+      margin-bottom: v.$spacing-xxs;
+    }
+
+    &__input {
+      @include c.form-input;
+      background: rgba(v.$white, 0.1);
+    }
+
+    &__error {
+      color: v.$error;
+      font-size: v.$font-size-xxs;
+      margin-top: v.$spacing-xxs;
+    }
+
+    &__button {
+      @include c.button-primary;
+      width: c.$full-width;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: v.$font-size-xs;
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+.globe-container {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 400px;
+  height: 400px;
+
+  canvas {
+    width: c.$full-width !important;
+    height: c.$full-height !important;
+  }
+}

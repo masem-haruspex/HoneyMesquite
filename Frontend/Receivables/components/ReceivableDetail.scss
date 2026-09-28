@@ -1,0 +1,114 @@
+.receivable-detail-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.receivable-detail-container {
+  font-family: 'Orbitron', sans-serif;
+  color: var(--primary-color);
+  padding: 20px;
+  background: rgba(10, 10, 20, 0.7);
+  border-radius: 8px;
+  border: 1px solid var(--primary-color);
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+  backdrop-filter: blur(5px);
+
+  .detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--primary-color);
+    padding-bottom: 10px;
+
+    h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .invoice-number {
+      font-family: monospace;
+      color: var(--secondary-color);
+      font-size: 1rem;
+    }
+  }
+
+  .detail-content {
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 15px 0;
+
+      .label {
+        color: var(--secondary-color);
+      }
+
+      .value {
+        font-weight: bold;
+      }
+    }
+  }
+
+  .probability-meter {
+    margin-top: 30px;
+
+    .meter-label {
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+      color: var(--secondary-color);
+    }
+
+    .meter-bar {
+      height: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--primary-color);
+
+      .meter-fill {
+        height: 100%;
+        border-radius: 8px;
+        transition: width 0.5s ease-out;
+      }
+
+      .meter-value {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.8rem;
+        color: white;
+        text-shadow: 0 0 5px black;
+      }
+    }
+  }
+
+  .detail-close-btn {
+    position: relative;
+    background: transparent;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 8px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Orbitron', sans-serif;
+    transition: all 0.3s ease;
+    outline: none;
+    margin-top: 20px; // Add some spacing
+    align-self: flex-end; // Align to end of container
+
+    &:hover, &.hover {
+      background: var(--primary-color);
+      color: black;
+      box-shadow: 0 0 15px var(--primary-color);
+    }
+  }
+}
+

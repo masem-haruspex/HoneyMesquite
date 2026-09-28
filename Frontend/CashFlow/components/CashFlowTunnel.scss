@@ -1,0 +1,183 @@
+// CashFlowTunnel.scss
+@use '../../scss/components' as c;
+@use '../../scss/vars' as v;
+
+.cash-flow-tunnel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  .tunnel-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    perspective: 1000px;
+  }
+
+  .tunnel-segment {
+    position: relative;
+    margin: 0 auto;
+    transform-style: preserve-3d;
+    transition: all 0.5s ease;
+
+    &.income {
+      .segment-fill {
+        background-color: rgba(v.$income, 0.6);
+      }
+      .segment-glow {
+        box-shadow: 0 0 15px rgba(v.$income, 0.4);
+      }
+    }
+
+    &.expense {
+      .segment-fill {
+        background-color: rgba(v.$expense, 0.6);
+      }
+      .segment-glow {
+        box-shadow: 0 0 15px rgba(v.$expense, 0.4);
+      }
+    }
+
+    &.highlighted {
+      .segment-fill {
+        opacity: 0.8;
+      }
+      .segment-glow {
+        opacity: 0.6;
+      }
+    }
+  }
+
+  .segment-fill {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 100%;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    z-index: 1;
+  }
+
+  .segment-glow {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    opacity: 0.3;
+    transition: all 0.3s ease;
+    z-index: 0;
+  }
+
+  .segment-label {
+    position: absolute;
+    left: calc(50% + 20px);
+    top: 50%;
+    transform: translateY(-50%);
+    color: v.$primary;
+    font-family: v.$font-primary;
+    font-size: v.$font-size-xs;
+    white-space: nowrap;
+    z-index: 2;
+  }
+
+  .tunnel-structure {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    height: 100%;
+    border: 1px solid rgba(v.$primary, 0.2);
+    border-radius: 50%;
+    opacity: 0.1;
+  }
+
+  .comparison-view {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .projected-segment {
+    position: relative;
+    width: 80%;
+    height: 30px;
+    margin-bottom: v.$spacing-md;
+    border-radius: 15px;
+    background-color: rgba(v.$primary, 0.6);
+    z-index: 2;
+
+    &.income {
+      background-color: rgba(v.$income, 0.6);
+    }
+
+    &.expense {
+      background-color: rgba(v.$expense, 0.6);
+    }
+  }
+
+  .actual-segment {
+    position: relative;
+    width: 70%;
+    height: 25px;
+    margin-bottom: v.$spacing-sm;
+    border-radius: 12px;
+    background-color: rgba(v.$primary, 0.6);
+    z-index: 1;
+
+    &.income {
+      background-color: rgba(v.$income, 0.6);
+    }
+
+    &.expense {
+      background-color: rgba(v.$expense, 0.6);
+    }
+
+    .variance-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 2px;
+      height: 100%;
+      background-color: v.$primary;
+      transform-origin: top center;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .segment-label {
+      font-size: v.$font-size-xxs;
+      left: calc(50% + 15px);
+    }
+
+    .projected-segment {
+      height: 25px;
+    }
+
+    .actual-segment {
+      height: 20px;
+    }
+  }
+}
+
+@keyframes tunnel-pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 0.9; }
+  100% { opacity: 0.6; }
+}
+
+@keyframes segment-highlight {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}

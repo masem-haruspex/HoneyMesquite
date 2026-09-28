@@ -1,0 +1,237 @@
+@use '../../scss/vars' as v;
+@use '../../scss/components' as c;
+
+.trial-balance-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: rgba(v.$black, 0.4);
+  border-radius: v.$border-radius;
+  overflow: hidden;
+  border: 1px solid rgba(v.$primary, 0.2);
+}
+
+.trial-balance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: v.$spacing-md;
+  border-bottom: 1px solid rgba(v.$primary, 0.2);
+  background: rgba(v.$black, 0.6);
+
+  h3 {
+    margin: 0;
+    color: v.$primary;
+    font-size: v.$font-size-sm;
+    text-transform: uppercase;
+  }
+
+  .controls {
+    display: flex;
+    gap: v.$spacing-sm;
+    align-items: center;
+
+    .search-box input {
+      @include c.form-input;
+      background: rgba(v.$white, 0.05);
+      border: 1px solid rgba(v.$primary, 0.3);
+      color: v.$white;
+      padding: v.$spacing-xs;
+      font-size: v.$font-size-xxs;
+      width: 200px;
+      
+      &:focus {
+        border-color: v.$primary;
+        outline: none;
+      }
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 2px;
+      
+      .filter-btn {
+        @include c.button-reset;
+        padding: v.$spacing-xs v.$spacing-sm;
+        background: rgba(v.$white, 0.05);
+        border: 1px solid transparent;
+        color: v.$gray-light;
+        font-size: v.$font-size-xxs;
+        cursor: pointer;
+        transition: all v.$transition-fast;
+        
+        &.active {
+          background: rgba(v.$primary, 0.2);
+          border-color: v.$primary;
+          color: v.$primary;
+        }
+        
+        &:hover:not(.active) {
+          background: rgba(v.$primary, 0.1);
+        }
+      }
+    }
+  }
+}
+
+.balance-summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: v.$spacing-md;
+  background: rgba(v.$black, 0.5);
+  border-bottom: 1px solid rgba(v.$primary, 0.2);
+  gap: v.$spacing-md;
+
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    .summary-label {
+      color: v.$gray-light;
+      font-size: v.$font-size-xxs;
+      text-transform: uppercase;
+    }
+    
+    .summary-value {
+      font-family: v.$font-mono;
+      font-weight: bold;
+      font-size: v.$font-size-sm;
+      
+      &.debit { color: v.$income; }
+      &.credit { color: v.$expense; }
+      &.balanced { color: v.$success; }
+      &.unbalanced { color: v.$error; text-shadow: 0 0 5px rgba(v.$error, 0.5); }
+    }
+  }
+}
+
+.trial-balance-table {
+  flex: 1;
+  overflow-y: auto;
+  @include c.custom-scrollbar;
+
+  .table-header, .table-body {
+    display: grid;
+    grid-template-columns: 100px 1.5fr 100px 120px 120px 120px;
+    gap: v.$spacing-xs;
+    padding: v.$spacing-xs v.$spacing-md;
+    align-items: center;
+    min-width: 700px;
+  }
+
+  .table-header {
+    position: sticky;
+    top: 0;
+    background: rgba(v.$black, 0.8);
+    backdrop-filter: blur(5px);
+    border-bottom: 1px solid rgba(v.$primary, 0.3);
+    z-index: 10;
+    
+    .header-cell {
+      color: v.$gray-light;
+      font-size: v.$font-size-xxs;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+  }
+
+  .table-body {
+    .table-row {
+      display: contents;
+      
+      > div {
+        padding: v.$spacing-xs v.$spacing-sm;
+        border-bottom: 1px solid rgba(v.$primary, 0.1);
+        color: v.$white;
+        font-size: v.$font-size-xs;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        
+        &:hover {
+          background: rgba(v.$primary, 0.05);
+          color: v.$primary;
+        }
+      }
+
+      .code { font-family: v.$font-mono; color: v.$secondary; font-weight: bold; }
+      .name { color: v.$white; }
+      
+      .type-badge {
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: v.$font-size-xxs;
+        text-transform: uppercase;
+        background: rgba(v.$white, 0.1);
+        
+        &.asset { color: v.$income; background: rgba(v.$income, 0.1); }
+        &.liability { color: v.$expense; background: rgba(v.$expense, 0.1); }
+        &.equity { color: v.$primary; background: rgba(v.$primary, 0.1); }
+        &.revenue { color: v.$warning; background: rgba(v.$warning, 0.1); }
+        &.expense { color: v.$error; background: rgba(v.$error, 0.1); }
+      }
+
+      .debit, .credit {
+        font-family: v.$font-mono;
+        justify-content: flex-end;
+        color: v.$gray-light;
+      }
+
+      .balance-amount {
+        font-family: v.$font-mono;
+        font-weight: bold;
+        justify-content: flex-end;
+        
+        &.debit { color: v.$income; }
+        &.credit { color: v.$expense; }
+        
+        .balance-type {
+          color: v.$gray-light;
+          font-size: v.$font-size-xxs;
+          margin-left: 4px;
+        }
+      }
+    }
+  }
+}
+
+.empty-state {
+  padding: v.$spacing-xl;
+  text-align: center;
+  color: v.$gray-light;
+  font-style: italic;
+}
+
+.trial-balance-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: v.$spacing-md;
+  background: rgba(v.$black, 0.6);
+  border-top: 1px solid rgba(v.$primary, 0.2);
+  font-size: v.$font-size-xxs;
+  color: v.$gray-light;
+
+  .footer-info {
+    display: flex;
+    gap: v.$spacing-sm;
+    align-items: center;
+    
+    .warning { color: v.$warning; }
+  }
+
+  .export-btn {
+    @include c.button-primary;
+    background: transparent;
+    border: 1px solid v.$primary;
+    color: v.$primary;
+    padding: v.$spacing-xs v.$spacing-md;
+    font-size: v.$font-size-xxs;
+    
+    &:hover {
+      background: rgba(v.$primary, 0.1);
+      box-shadow: 0 0 8px rgba(v.$primary, 0.3);
+    }
+  }
+}

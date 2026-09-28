@@ -1,0 +1,307 @@
+@use '../scss/vars' as v;
+@use '../scss/components' as c;
+
+.sidebar-container {
+  width: 240px;
+  height: 100%;
+  background: rgba(v.$black, 0.9);
+  backdrop-filter: blur(10px);
+  border-radius: v.$border-radius-lg;
+  border: 1px solid rgba(v.$primary, 0.2);
+  box-shadow: v.$shadow-md;
+  overflow: hidden;
+  color: v.$white;
+  font-family: v.$font-primary;
+  position: relative;
+  transition: all v.$transition-normal;
+  display: flex;
+  flex-direction: column;
+
+  &.collapsed {
+    transform: translateY(-250px) translateX(-80px);
+    width: 60px;
+    margin: 0;
+    padding: 0;
+
+    .sidebar-header {
+      padding: 6px 0.2px;
+      margin-top: 6px;
+
+      .sidebar-title-container {
+        font-size: v.$font-size-md;
+        margin-bottom: 0;
+        gap: 0;
+      }
+    }
+
+    .sidebar-nav {
+      padding: v.$spacing-sm;
+    }
+
+    .sidebar-button {
+      padding: v.$spacing-sm;
+      justify-content: center;
+      text-align: center;
+      gap: 0;
+
+      .sidebar-icon {
+        font-size: 1.2em;
+        min-width: 1.2em;
+      }
+
+      .sidebar-label {
+        display: none;
+      }
+    }
+
+    .sidebar-footer {
+      padding: v.$spacing-sm;
+
+      .sidebar-status {
+        gap: v.$spacing-xxs;
+
+        .status-dot {
+          width: 6px;
+          height: 6px;
+        }
+
+        .status-text {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .glow-effect {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.3;
+    border-radius: inherit;
+    background: radial-gradient(circle at center, rgba(v.$primary, 0.6) 0%, rgba(v.$primary, 0) 70%);
+    filter: blur(3px);
+  }
+
+  .sidebar-header {
+    padding: v.$spacing-md;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid rgba(v.$primary, 0.1);
+
+    .sidebar-title-container {
+      font-size: v.$font-size-xl;
+      color: v.$primary;
+      margin: 0;
+      letter-spacing: 1px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: v.$spacing-xs;
+      transition: all v.$transition-normal;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: v.$spacing-xs;
+      cursor: pointer;
+
+      .sidebar-title{
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+
+      .sidebar-title-collapsed{
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+
+      .toggle-arrow {
+        font-size: 0.7em;
+        transition: transform v.$transition-normal;
+        opacity: 0.7;
+      }
+
+      &:hover .toggle-arrow {
+        opacity: 1;
+      }
+
+      &:before {
+        content: '';
+        display: block;
+        width: 40px;
+        height: 2px;
+        background: v.$primary;
+        margin: 0 auto v.$spacing-xs;
+        transition: all v.$transition-normal;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: v.$spacing-sm;
+    display: flex;
+    flex-direction: column;
+
+    .sidebar-menu {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: v.$spacing-sm;
+    }
+
+    .sidebar-item {
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  .sidebar-button {
+    outline: none;
+    box-shadow: none;
+    border: none;
+    background: none;
+    margin: 0;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    width: 100%;
+    padding: v.$spacing-sm v.$spacing-md;
+    background: transparent;
+    color: v.$white;
+    border-radius: v.$border-radius-sm;
+    transition: all v.$transition-normal;
+    display: flex;
+    align-items: center;
+    gap: v.$spacing-sm;
+    font-size: v.$font-size-sm;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    box-sizing: border-box;
+    position: relative;
+
+    &:focus,
+    &:active,
+    &:focus-visible,
+    &:focus-within {
+      outline: none;
+      box-shadow: none;
+      border-color: transparent;
+    }
+
+    &::-moz-focus-inner {
+      border: 0;
+      padding: 0;
+    }
+
+    .sidebar-icon {
+      font-size: 1.2em;
+      min-width: 1.2em;
+      transition: color v.$transition-normal;
+    }
+
+    .sidebar-label {
+      white-space: nowrap;
+    }
+
+    &:hover {
+      color: rgba(v.$primary, 0.8);
+
+      .sidebar-icon {
+        color: v.$primary;
+      }
+    }
+
+    @include c.civ-glow-active(v.$primary, 2px, 3px, 6px);
+
+    font-size: v.$font-size-sm !important;
+    text-transform: none !important;
+    letter-spacing: 0.5px !important;
+
+    &.active .sidebar-icon {
+      color: v.$primary;
+    }
+  }
+
+  .sidebar-footer {
+    padding: v.$spacing-md;
+    text-align: center;
+    border-top: 1px solid rgba(v.$primary, 0.1);
+    transition: all v.$transition-normal;
+
+    .sidebar-status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: v.$spacing-xs;
+      font-size: v.$font-size-xxs;
+      color: v.$gray-light;
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        border: 1px solid v.$white;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        background-color: v.$primary;
+      }
+
+      .status-text {
+        font-size: v.$font-size-xxs;
+      }
+    }
+  }
+  .sidebar-subtitle{
+    font-size: 0.6rem;
+    display: block;
+    margin-top: 2px;
+    opacity: 0.8;
+    font-weight: normal;
+    text-transform: none;
+    letter-spacing: 0.5px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar-container {
+    width: 200px;
+
+    &.collapsed {
+      width: 50px;
+
+      .sidebar-title .toggle-arrow {
+        display: none;
+      }
+    }
+
+    .sidebar-button {
+      padding: v.$spacing-xs v.$spacing-sm;
+      font-size: v.$font-size-xs;
+
+      .sidebar-label {
+        display: none;
+      }
+    }
+
+    .sidebar-footer {
+      .status-dot {
+        width: 6px;
+        height: 6px;
+      }
+    }
+  }
+}

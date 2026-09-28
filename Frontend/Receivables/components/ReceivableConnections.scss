@@ -1,0 +1,181 @@
+// ReceivableConnections.scss
+@use '../../scss/vars' as v;
+
+.receivable-chart-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  .VictoryContainer {
+    background: transparent !important;
+    
+    // Chart lines
+    path {
+      filter: drop-shadow(0 0 2px rgba(v.$primary, 0.4));
+    }
+    
+    // Axis lines
+    line {
+      stroke: rgba(v.$primary, 0.3) !important;
+    }
+    
+    // Grid lines
+    .VictoryGrid line {
+      stroke: rgba(v.$primary, 0.1) !important;
+    }
+    
+    // Axis labels
+    text {
+      fill: v.$gray-light !important;
+      font-family: v.$font-primary !important;
+      font-size: 10px !important;
+    }
+  }
+
+  // Scatter points enhancement
+  .VictoryScatter {
+    circle {
+      filter: drop-shadow(0 0 4px currentColor);
+      transition: all 0.3s ease;
+      
+      &:hover {
+        r: 10 !important;
+        filter: drop-shadow(0 0 8px currentColor);
+      }
+    }
+  }
+
+  // Connection lines enhancement
+  .VictoryLine {
+    path {
+      stroke: rgba(v.$primary, 0.6) !important;
+      stroke-width: 2 !important;
+      filter: drop-shadow(0 0 3px rgba(v.$primary, 0.3));
+      transition: all 0.3s ease;
+      
+      &:hover {
+        stroke-width: 3 !important;
+        stroke: rgba(v.$primary, 0.9) !important;
+        filter: drop-shadow(0 0 6px rgba(v.$primary, 0.5));
+      }
+    }
+  }
+
+  // Tooltip styling
+  .VictoryTooltip {
+    background: rgba(v.$black, 0.95) !important;
+    border: 1px solid v.$primary !important;
+    border-radius: v.$border-radius-sm !important;
+    box-shadow: 0 0 20px rgba(v.$primary, 0.3) !important;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 8px;
+      height: 8px;
+      background: rgba(v.$black, 0.95);
+      border-top: 1px solid v.$primary;
+      border-left: 1px solid v.$primary;
+      transform: rotate(45deg);
+    }
+    
+    text {
+      fill: v.$white !important;
+      font-family: v.$font-primary !important;
+      font-size: v.$font-size-xs !important;
+    }
+  }
+
+  // Legend styling
+  .chart-legend {
+    display: flex;
+    justify-content: center;
+    gap: v.$spacing-lg;
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: v.$spacing-xs;
+      
+      .color-box {
+        width: 12px;
+        height: 12px;
+        border-radius: 2px;
+        box-shadow: 0 0 6px currentColor;
+        transition: all 0.3s ease;
+      }
+      
+      span {
+        color: v.$gray-light;
+        font-size: v.$font-size-xxs;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-family: v.$font-primary;
+      }
+      
+      &:hover {
+        .color-box {
+          transform: scale(1.2);
+          box-shadow: 0 0 10px currentColor;
+        }
+        
+        span {
+          color: v.$primary;
+        }
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .receivable-chart-container {
+    padding: v.$spacing-sm;
+    
+    .chart-legend {
+      flex-wrap: wrap;
+      gap: v.$spacing-sm;
+      
+      .legend-item {
+        span {
+          font-size: v.$font-size-xxs;
+        }
+      }
+    }
+  }
+}
+
+// Animation for chart elements
+@keyframes chartFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.VictoryContainer {
+  animation: chartFadeIn 0.6s ease-out;
+}
+
+// Hover effects for better interactivity
+.VictoryScatter, .VictoryLine {
+  cursor: pointer;
+  
+  &:hover {
+    ~ .VictoryTooltip {
+      opacity: 1 !important;
+    }
+  }
+}

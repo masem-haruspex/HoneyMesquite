@@ -1,0 +1,27 @@
+// src/scss/glow.scss
+@use './vars' as v;
+@use "sass:map";
+
+.glow-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: v.$border-radius;
+  pointer-events: none;
+  transition: opacity v.$transition-normal;
+  z-index: -1;
+
+  @each $name, $effect in v.$glow-effects {
+    &--#{$name} {
+      opacity: 0;
+      background: map.get($effect, 'background');
+      box-shadow: map.get($effect, 'box-shadow');
+    }
+  }
+}
+
+.glow-show {
+  opacity: map.get(map.get(v.$glow-effects, 'primary'), 'opacity') !important;
+}

@@ -1,0 +1,179 @@
+// CashFlow.scss
+@use '../scss/components' as c;
+@use '../scss/vars' as v;
+
+.cash-flow-dashboard {
+  @include c.mm_container; 
+  width: 100%;
+  max-width: 1200px;
+  height: 620px;
+  max-height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: column;
+
+  .glow-effect {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.25;
+    border-radius: inherit;
+    background: radial-gradient(
+      circle at center,
+      rgba(v.$primary, 0.6) 0%,
+      rgba(v.$black, 0.8) 70%
+    );
+    filter: blur(6px);
+  }
+
+  .dashboard-header {
+    padding: v.$spacing-md v.$spacing-lg;
+    border-bottom: 1px solid v.$primary-alpha-20;
+    background: rgba(v.$black, 0.6);
+    position: relative;
+    z-index: 10;
+
+    h2 {
+      color: v.$primary;
+      font-size: v.$font-size-lg;
+      margin: 0;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      text-align: center;
+      position: relative;
+      display: inline-block;
+
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(v.$primary, 0.5), transparent);
+      }
+    }
+
+    .tabs {
+      display: flex;
+      gap: v.$spacing-xs;
+      justify-content: center;
+      margin-top: v.$spacing-sm;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      button {
+        padding: v.$spacing-xs v.$spacing-md;
+        background: transparent;
+        border: none;
+        color: v.$gray-light;
+        font-size: v.$font-size-xxs;
+        font-family: v.$font-primary;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: all v.$transition-normal;
+        min-width: 80px;
+          &:focus {
+    outline: none;   // removes the white ring
+  }
+
+        @include c.civ-glow-active(v.$primary, 2px, 3px, 6px);
+
+        &:hover {
+          color: v.$primary;
+        }
+
+        &.active {
+          color: v.$primary;
+        }
+      }
+    }
+  }
+
+  .dashboard-content {
+    flex: 1;
+    padding: v.$spacing-lg;
+    overflow-y: auto;
+    @include c.custom-scrollbar;
+    background: rgba(v.$black, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+  }
+
+  .dashboard-status-bar {
+    padding: v.$spacing-md v.$spacing-lg;
+    background: rgba(v.$black, 0.7);
+    border-top: 1px solid v.$primary-alpha-20;
+    display: flex;
+    justify-content: space-around;
+    font-size: v.$font-size-xxs;
+    color: v.$gray-light;
+    flex-shrink: 0;
+
+    .status-item {
+      text-align: center;
+
+      .label {
+        display: block;
+        color: v.$primary;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-size: v.$font-size-xxs;
+      }
+
+      .value {
+        font-weight: bold;
+        color: v.$primary;
+        font-family: v.$font-mono;
+        font-size: v.$font-size-sm;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .cash-flow-dashboard {
+    height: 550px;
+    max-height: calc(100vh - 80px);
+    border-radius: 4px;
+  }
+
+  .dashboard-header {
+    padding: v.$spacing-sm;
+
+    h2 {
+      font-size: v.$font-size-md;
+    }
+
+    .tabs {
+      gap: v.$spacing-xxs;
+
+      button {
+        padding: v.$spacing-xxs v.$spacing-sm;
+        min-width: 70px;
+        font-size: v.$font-size-xxs;
+      }
+    }
+  }
+
+  .dashboard-content {
+    padding: v.$spacing-md;
+  }
+
+  .dashboard-status-bar {
+    flex-direction: row;
+    gap: v.$spacing-sm;
+    font-size: v.$font-size-xxs;
+
+    .status-item .value {
+      font-size: v.$font-size-xs;
+    }
+  }
+}

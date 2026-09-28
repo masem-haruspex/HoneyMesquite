@@ -1,0 +1,160 @@
+// src/components/ProfitLoss/ProfitabilityTrend.scss
+@use '../../scss/vars' as v;
+@use '../../scss/components' as c;
+
+.profitability-trend__container {
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+  backdrop-filter: blur(4px);
+  border: 1px solid v.$primary;
+  box-shadow: v.$shadow-md;
+  color: v.$white;
+  font-family: v.$font-primary;
+  font-size: v.$font-size-sm;
+  overflow: hidden;
+  position: relative;
+  background: rgba(v.$black, 0.8);
+  border-radius: v.$border-radius-lg;
+  height: 210px;
+  max-height: 210px;
+  padding: 0.8rem;
+  padding-bottom: 0;
+}
+
+.profitability-trend__title {
+  text-align: center;
+  color: v.$primary-light;
+  margin: 0 0 0 0;
+  font-size: v.$font-size-sm;
+  font-weight: 600;
+  letter-spacing: c.$type-letter-spacing;
+  border-bottom: 1px solid v.$border-color;
+  padding-bottom: v.$spacing-xs;
+}
+
+.profitability-trend__chart {
+  display: flex;
+  flex-direction: column;
+  gap: v.$spacing-xs;
+  height: auto;
+  overflow-y: auto;
+  @include c.custom-scrollbar;
+
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: v.$primary;
+    border-radius: 2px;
+  }
+}
+
+.profitability-trend__item {
+  display: flex;
+  align-items: center;
+  gap: v.$spacing-xs;
+  position: relative;
+  padding: v.$spacing-xs 0;
+  border-bottom: 1px dashed rgba(v.$primary, 0.2);
+}
+
+.profitability-trend__period {
+  min-width: 70px;
+  font-size: v.$font-size-xs;
+  color: v.$gray-light;
+  font-family: v.$font-mono;
+  white-space: nowrap;
+}
+
+.profitability-trend__bar {
+  height: 16px;
+  border-radius: 8px;
+  transition: all v.$transition-normal;
+  flex: 1;
+  margin-right: v.$spacing-xs;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.profitability-trend__bar--revenue {
+  background: linear-gradient(to right, v.$income-light 0%, v.$income 100%);
+  box-shadow: 0 0 8px rgba(v.$income, 0.4);
+}
+
+.profitability-trend__bar--net-income {
+  background: linear-gradient(to right, v.$primary-light 0%, v.$primary 100%);
+  box-shadow: 0 0 8px rgba(v.$primary, 0.4);
+}
+
+.profitability-trend__bar.selected {
+  transform: scale(1.05);
+  filter: drop-shadow(0 0 10px rgba(v.$primary, 0.6));
+}
+
+.profitability-trend__margin-label {
+  position: absolute;
+  font-size: v.$font-size-xxs;
+  color: v.$accent-light;
+  font-weight: bold;
+  pointer-events: none;
+  text-shadow: 0 0 4px v.$black;
+  background: rgba(v.$black, 0.7);
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+  white-space: nowrap;
+  z-index: 2;
+  border: 1px solid rgba(v.$accent, 0.4);
+  box-shadow: 0 0 8px rgba(v.$accent, 0.5);
+}
+
+.profitability-trend__legend {
+  display: flex;
+  justify-content: center;
+  gap: v.$spacing-md;
+  flex-wrap: wrap;
+  font-size: v.$font-size-xs;
+  color: v.$gray-light;
+  margin: 0;
+  padding: 0;
+  margin-top: 0.6rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: v.$spacing-xs;
+  font-size: inherit;
+}
+
+.legend-color-box {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.legend-color-box.revenue {
+  background: v.$income;
+  box-shadow: 0 0 6px rgba(v.$income, 0.5);
+}
+
+.legend-color-box.net-income {
+  background: v.$primary;
+  box-shadow: 0 0 6px rgba(v.$primary, 0.5);
+}
+
+.legend-color-box.margin {
+  background: v.$accent;
+  box-shadow: 0 0 6px rgba(v.$accent, 0.5);
+}
+
+.profitability-trend__empty {
+  color: v.$gray-medium;
+  font-style: italic;
+  text-align: center;
+  padding: v.$spacing-md;
+  font-size: v.$font-size-sm;
+}
+

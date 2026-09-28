@@ -1,0 +1,1432 @@
+import { VictoryChart, VictoryScatter, VictoryAxis, VictoryTooltip, VictoryLabel } from 'victory'
+import { COLORS } from '../../colors'
+import type { AccountsReceivable } from '../receivable'
+import './RiskScatterPlot.scss'
+
+interface RiskScatterPlotProps {
+  receivables: AccountsReceivable[]
+}
+
+const RiskScatterPlot: React.FC<RiskScatterPlotProps> = ({ receivables }) => {
+  const data = receivables.map(r => {
+    const probability = r.probabilityOfPayment || 0
+    const daysLate = r.daysLate || 0
+    const amount = r.amount
+
+    let color = COLORS.EXPENSE
+    if (probability > 0.7) color = COLORS.INCOME
+    else if (probability > 0.4) color = COLORS.WARNING
+
+    return {
+      x: daysLate,
+      y: probability,
+      size: Math.max(3, Math.min(12, amount / 5000)),
+      client: r.client.name,
+      amount,
+      daysLate,
+      color
+    }
+  })
+
+  return (
+    <div className="risk-scatter-plot-wrapper">
+      <h3 className="chart-title">Risk vs. Time</h3>
+
+      <div className="risk-scatter-container">
+        <VictoryChart
+          width={400}
+          height={300}
+          domainPadding={{ x: 30, y: 20 }}
+          padding={{ top: 30, bottom: 60, left: 70, right: 40 }}
+        >
+          {/* Y-axis: Probability */}
+          <VictoryAxis
+            dependentAxis
+            label="Payment Probability"
+            tickFormat={(t: any) => `${(t * 100).toFixed(0)}%`}
+            axisLabelComponent={<VictoryLabel dy={-30} dx={0} />}
+            style={{
+              axis: { stroke: COLORS.TEXT },
+              tickLabels: { fill: COLORS.TEXT, fontSize: 10 },
+              axisLabel: { fill: COLORS.TEXT, fontSize: 12 }
+            }}
+          />
+          {/* X-axis: Days Late */}
+          <VictoryAxis
+            label="Days Late"
+            tickFormat={(t) => t.toString()}
+            style={{
+              axis: { stroke: COLORS.TEXT },
+              tickLabels: { fill: COLORS.TEXT, fontSize: 10 },
+              axisLabel: { fill: COLORS.TEXT, fontSize: 12 }
+            }}
+          />
+          {/* Scatter Points */}
+          <VictoryScatter
+            data={data}
+            dataComponent={
+              <g>
+                {data.map((datum, index) => (
+                  <circle
+                    key={index}
+                    cx={datum.x}
+                    cy={datum.y}
+                    r={datum.size}
+                    fill={datum.color}
+                    style={{ filter: 'drop-shadow(0 0 2px rgba(0, 245, 255, 0.4))' }}
+                  />
+                ))}
+              </g>
+            }
+            labels={(datum) =>
+              `${datum.client}: $${datum.amount.toLocaleString()} (${datum.daysLate}d)`
+            }
+            labelComponent={
+              <VictoryTooltip
+                flyoutStyle={{ fill: 'black' }}
+                style={{ fill: COLORS.TEXT, fontSize: 9 }}
+                dy={-12}
+              />
+            }
+          />
+        </VictoryChart>
+      </div>
+
+      <p className="chart-subtitle">Size = Amount | Color = Risk Level</p>
+    </div>
+  )
+}
+
+export default RiskScatterPlot
+
+// version 2:
+// components/RiskScatterPlot.tsx
+//import React, { useMemo } from 'react'
+//import * as THREE from 'three'
+//import { Text } from '@react-three/drei'
+//import { VictoryChart, VictoryScatter, VictoryAxis, VictoryTooltip, VictoryLabel } from 'victory'
+//import { COLORS } from '../../colors'
+//import type { AccountsReceivable } from '../receivable'
+//import './RiskScatterPlot.scss'
+//import { renderToStaticMarkup } from 'react-dom/server'
+//
+//interface RiskScatterPlotProps {
+//  receivables: AccountsReceivable[]
+//  position: [number, number, number]
+//}
+//
+//const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v))
+//
+//const RiskScatterPlot: React.FC<RiskScatterPlotProps> = ({ receivables, position }) => {
+//  /* ---------- data (unchanged) ---------- */
+//  const data = useMemo(() => {
+//    return receivables.map((r) => {
+//      const p = r.probabilityOfPayment ?? 0
+//      const d = r.daysLate ?? 0
+//      const a = r.amount
+//
+//      let color = COLORS.EXPENSE
+//      if (p > 0.7) color = COLORS.INCOME
+//      else if (p > 0.4) color = COLORS.WARNING
+//
+//      return {
+//        x: d,
+//        y: p,
+//        size: clamp(a / 5000, 3, 12),
+//        client: r.client.name,
+//        amount: a,
+//        daysLate: d,
+//        color
+//      }
+//    })
+//  }, [receivables])
+//
+//  /* ---------- build SVG string ---------- */
+//  const svgString = useMemo(() => {
+//    // Victory renders into a detached SVG
+//    const svgElement = (
+//      <svg xmlns="http://www.w3.org/2000/svg " width="400" height="300">
+//        <VictoryChart
+//          width={400}
+//          height={300}
+//          domainPadding={{ x: 30, y: 20 }}
+//          padding={{ top: 30, bottom: 60, left: 70, right: 40 }}
+//          standalone={false}          // ← embed inside our own svg
+//          containerComponent={<></>}  // ← do not create a second svg
+//        >
+//          {/* Y-axis */}
+//          <VictoryAxis
+//            dependentAxis
+//            label="Payment Probability"
+//            tickFormat={(t: number) => `${(t * 100).toFixed(0)}%`}
+//            axisLabelComponent={<VictoryLabel dy={-30} />}
+//            style={{
+//              axis: { stroke: COLORS.TEXT },
+//              tickLabels: { fill: COLORS.TEXT, fontSize: 10 },
+//              axisLabel: { fill: COLORS.TEXT, fontSize: 12 }
+//            }}
+//          />
+//          {/* X-axis */}
+//          <VictoryAxis
+//            label="Days Late"
+//            tickFormat={(t: number) => t.toString()}
+//            style={{
+//              axis: { stroke: COLORS.TEXT },
+//              tickLabels: { fill: COLORS.TEXT, fontSize: 10 },
+//              axisLabel: { fill: COLORS.TEXT, fontSize: 12 }
+//            }}
+//          />
+//          {/* Scatter – let Victory draw the points */}
+//          <VictoryScatter
+//            data={data}
+//            size={(d: any) => d.size}
+//            style={{
+//              data: { fill: (d: any) => d.color, filter: 'drop-shadow(0 0 2px rgba(0,245,255,.4))' }
+//            }}
+//            labels={(d: any) =>
+//              `${d.client}: $${d.amount.toLocaleString()} (${d.daysLate}d)`
+//            }
+//            labelComponent={
+//              <VictoryTooltip
+//                flyoutStyle={{ fill: 'black' }}
+//                style={{ fill: COLORS.TEXT, fontSize: 9 }}
+//                dy={-12}
+//              />
+//            }
+//          />
+//        </VictoryChart>
+//      </svg>
+//    )
+//
+//    // render to string
+//    return renderToStaticMarkup(svgElement)
+//  }, [data])
+//
+//  /* ---------- SVG → texture ---------- */
+//  const texture = useMemo(() => {
+//    const blob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' })
+//    const url = URL.createObjectURL(blob)
+//    const tex = new THREE.TextureLoader().load(url)
+//    tex.flipY = false
+//    tex.colorSpace = THREE.SRGBColorSpace
+//    return tex
+//  }, [svgString])
+//
+//  /* ---------- scene graph ---------- */
+//  return (
+//    <group position={position}>
+//      {/* title */}
+//      <Text
+//        position={[0, 2.9, 0]}
+//        fontSize={0.2}
+//        color={COLORS.PRIMARY}
+//        anchorX="center"
+//        font="/fonts/orbitron-bold.otf"
+//      >
+//        Risk vs. Time
+//      </Text>
+//
+//      {/* chart plane – identical size as original Html div */}
+//      <mesh position={[0, 0, 0]}>
+//        <planeGeometry args={[4, 3]} />
+//        <meshBasicMaterial map={texture} transparent opacity={0.95} />
+//      </mesh>
+//
+//      {/* subtitle */}
+//      <Text
+//        position={[0, -2.8, 0]}
+//        fontSize={0.18}
+//        color={COLORS.SECONDARY}
+//        anchorX="center"
+//        font="/fonts/orbitron-medium.otf"
+//      >
+//        Size = Amount | Color = Risk Level
+//      </Text>
+//    </group>
+//  )
+//}
+//
+//export default RiskScatterPlot
+//
+import {
+  VictoryBar,
+  VictoryChart,
+  VictoryAxis,
+  VictoryLegend,
+  VictoryLabel
+} from 'victory'
+import { COLORS } from '../../colors'
+import type { AccountsReceivable } from '../receivable'
+import './RiskDistributionBar.scss'
+
+interface RiskDistributionBarProps {
+  receivables: AccountsReceivable[]
+}
+
+const RiskDistributionBar: React.FC<RiskDistributionBarProps> = ({ receivables }) => {
+  const groups = [
+    {
+      label: 'Low Risk',
+      filter: (r: AccountsReceivable) => (r.probabilityOfPayment ?? 0) > 0.7,
+      color: COLORS.INCOME
+    },
+    {
+      label: 'Medium Risk',
+      filter: (r: AccountsReceivable) => (r.probabilityOfPayment ?? 0) > 0.4 && (r.probabilityOfPayment ?? 0) <= 0.7,
+      color: COLORS.WARNING
+    },
+    {
+      label: 'High Risk',
+      filter: (r: AccountsReceivable) => (r.probabilityOfPayment ?? 0) <= 0.4,
+      color: COLORS.EXPENSE
+    }
+  ]
+
+  // Safely compute totals
+  const data = groups.map(group => {
+    const total = receivables
+      .filter(group.filter)
+      .reduce((sum, r) => {
+        const amount = typeof r.amount === 'number' ? r.amount : parseFloat(r.amount as unknown as string) || 0
+        return sum + amount
+      }, 0)
+
+    return {
+      x: group.label,
+      y: total,
+      fill: group.color
+    }
+  })
+
+  // Safe max total
+  const validYValues = data.map(d => d.y).filter(y => typeof y === 'number' && !isNaN(y))
+  const maxTotal = validYValues.length > 0 ? Math.max(...validYValues) : 1
+
+  return (
+    <div className="risk-distribution-wrapper">
+      <h3 className="chart-title">Risk Exposure</h3>
+
+      <div className="risk-bar-container">
+        <VictoryChart
+          width={400}
+          height={300}
+          domainPadding={{ x: 50, y: 20 }}
+          padding={{ left: 80, right: 50, top: 60, bottom: 100 }}
+        >
+          {/* X-Axis */}
+          <VictoryAxis
+            label="Risk Level"
+            style={{
+              axis: { stroke: COLORS.TEXT },
+              tickLabels: { fill: COLORS.TEXT, fontSize: 11 },
+              axisLabel: { fill: COLORS.TEXT, fontSize: 12 }
+            }}
+          />
+
+          {/* Y-Axis */}
+          <VictoryAxis
+            dependentAxis
+            label="Total Value"
+            tickFormat={(y: number) => {
+              if (isNaN(y) || typeof y !== 'number') return '$0k'
+              return `$${(y / 1000).toFixed(0)}k`
+            }}
+            axisLabelComponent={<VictoryLabel dy={-20} dx={0} />}
+            style={{
+              axis: { stroke: COLORS.TEXT },
+              tickLabels: { fill: COLORS.TEXT, fontSize: 11 },
+              axisLabel: { fill: COLORS.TEXT, fontSize: 12 }
+            }}
+          />
+
+          {/* Bar Chart */}
+          <VictoryBar
+            data={data}
+            style={{
+              data: {
+                fill: ({ datum }) => datum.fill,
+                filter: 'drop-shadow(0 0 3px rgba(0, 245, 255, 0.5))'
+              },
+              labels: {
+                fill: COLORS.TEXT,
+                fontSize: 10,
+                fontWeight: 'bold'
+              }
+            }}
+            labels={({ datum }) => `$${(datum.y / 1000).toFixed(0)}k`}
+            labelComponent={
+              <VictoryLabel
+                dy={-10}
+                textAnchor="middle"
+                style={{
+                  fill: COLORS.TEXT,
+                  fontSize: 10,
+                  fontWeight: 'bold',
+                  fontFamily: 'Orbitron'
+                }}
+              />
+            }
+            cornerRadius={4}
+            barWidth={60}
+          />
+
+          {/* Legend */}
+          <VictoryLegend
+            x={100}
+            y={260}
+            orientation="horizontal"
+            gutter={15}
+            symbolSpacer={5}
+            style={{
+              labels: { fill: '#ffffff', fontSize: 10 },
+              title: { fill: '#ffffff', fontSize: 10 }
+            }}
+            data={data.map(d => ({
+              name: d.x,
+              symbol: { fill: d.fill }
+            }))}
+          />
+        </VictoryChart>
+      </div>
+
+      <p className="max-value-label">Max: $ {(maxTotal / 1000).toFixed(0)}k</p>
+    </div>
+  )
+}
+
+export default RiskDistributionBar
+// components/ReceivableConnections.tsx
+import {
+  VictoryChart,
+  VictoryScatter,
+  VictoryLine,
+  VictoryAxis,
+  VictoryLabel,
+} from 'victory'
+import { COLORS } from '../../colors'
+import type { AccountsReceivable } from '../receivable'
+import "./ReceivableConnections.scss";
+
+interface Point {
+  x: number
+  y: number
+  amount: number
+  clientName: string
+  status: string
+  probability: number
+  color: string
+  id: number
+}
+
+interface Connection {
+  start: { x: number; y: number }
+  end: { x: number; y: number }
+  color: string
+}
+
+interface ReceivableConnectionsProps {
+  receivables: AccountsReceivable[]
+}
+
+export default function ReceivableConnections({ receivables }: ReceivableConnectionsProps) {
+  // Map each receivable to a point on a 2D plane
+  const points: Point[] = receivables.map((r) => ({
+    x: r.id,
+    y: r.daysLate || 0,
+    amount: r.amount,
+    clientName: r.client.name,
+    status: r.collectionStage,
+    probability: r.probabilityOfPayment || 0,
+    color: getAgingColor(r),
+    id: r.id
+  }))
+
+  // Create connections between same-client receivables
+  const connections: Connection[] = []
+  const clientMap = new Map<number, AccountsReceivable[]>()
+  receivables.forEach((r) => {
+    if (!clientMap.has(r.client.id)) {
+      clientMap.set(r.client.id, [])
+    }
+    clientMap.get(r.client.id)?.push(r)
+  })
+
+  clientMap.forEach((clientReceivables) => {
+    if (clientReceivables.length > 1) {
+      for (let i = 0; i < clientReceivables.length - 1; i++) {
+        const r1 = clientReceivables[i]
+        const r2 = clientReceivables[i + 1]
+        const p1 = points.find((p) => p.id === r1.id)
+        const p2 = points.find((p) => p.id === r2.id)
+        if (p1 && p2) {
+          connections.push({
+            start: { x: p1.x, y: p1.y },
+            end: { x: p2.x, y: p2.y },
+            color: COLORS.PRIMARY
+          })
+        }
+      }
+    }
+  })
+
+  return (
+    <div className="receivable-chart-container">
+      <VictoryChart
+        domainPadding={{ x: 0, y: 0 }}
+        width={800}
+        height={500}
+        padding={{ top: 50, bottom: 70, left: 70, right: 40 }}
+      >
+        {/* Y-axis: Days Late */}
+        <VictoryAxis
+  dependentAxis
+          tickFormat={(t: number) => `${t} days`}
+  label="Days Late"
+  axisLabelComponent={<VictoryLabel dx={-10} dy={-32} />}
+  style={{
+    axis: { stroke: '#ffffff', strokeWidth: 1 },
+    tickLabels: { fill: '#ffffff', fontSize: 10 },
+    axisLabel: {
+      fill: '#ffffff',
+      fontSize: 12,
+      fontWeight: 'bold'
+    }
+  }}
+/>
+
+        {/* X-axis: Invoice ID */}
+        <VictoryAxis
+          tickFormat={(t) => t.toString()}
+          label="Invoice ID"
+          style={{
+            axis: { stroke: '#ffffff', strokeWidth: 1 },
+              tickLabels: { fill: '#ffffff', fontSize: 10 },
+              axisLabel: { fill: '#ffffff', fontSize: 12 }
+          }}
+        />
+
+        {/* Scatter Points */}
+        <VictoryScatter
+  data={points}
+  size={8}
+  style={{
+    data: {
+      fill: ({ datum }) => datum.color,
+      stroke: ({ datum }) => datum.color,
+      strokeWidth: 1
+    }
+  }}
+  labels={({ datum }) => datum.clientName}
+  labelComponent={
+    <VictoryLabel
+      dy={16} // position below the dot
+      style={{
+        fill: '#fff',
+        fontSize: 9,
+        fontWeight: 'normal'
+      }}
+    />
+  }
+/>
+
+        {/* Connection Lines */}
+        {connections.map((conn, i) => (
+          <VictoryLine
+  key={i}
+  data={[
+    { x: conn.start.x, y: conn.start.y },
+    { x: conn.end.x, y: conn.end.y }
+  ]}
+  style={{
+    data: {
+      stroke: conn.color,
+      strokeWidth: 2,
+      opacity: 0.6
+    }
+  }}
+/>
+        ))}
+      </VictoryChart>
+
+      {/* Legend */}
+      <div className="chart-legend">
+        <div className="legend-item">
+          <div className="color-box" style={{ backgroundColor: COLORS.INCOME }}></div>
+          <span>0–30 days</span>
+        </div>
+        <div className="legend-item">
+          <div className="color-box" style={{ backgroundColor: COLORS.WARNING }}></div>
+          <span>31–60 days</span>
+        </div>
+        <div className="legend-item">
+          <div className="color-box" style={{ backgroundColor: COLORS.EXPENSE }}></div>
+          <span>61–90 days</span>
+        </div>
+        <div className="legend-item">
+          <div className="color-box" style={{ backgroundColor: COLORS.CRITICAL }}></div>
+          <span>90+ days</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function getAgingColor(receivable: AccountsReceivable): string {
+  const daysLate = receivable.daysLate || 0
+  if (daysLate <= 30) return COLORS.INCOME
+  if (daysLate <= 60) return COLORS.WARNING
+  if (daysLate <= 90) return COLORS.EXPENSE
+  return COLORS.CRITICAL
+}
+// components/TimelineChart3D.tsx
+import { Html } from '@react-three/drei';
+import { useMemo } from 'react';
+import {
+  VictoryAxis,
+  VictoryChart,
+  VictoryContainer,
+  VictoryLegend,
+  VictoryScatter,
+  VictoryTooltip,
+} from 'victory';
+import { COLORS } from '../../colors';
+import type { AccountsReceivable } from '../receivable';
+
+interface TimelineChart3DProps {
+  receivables: AccountsReceivable[];
+}
+
+export default function TimelineChart3D({ receivables }: TimelineChart3DProps) {
+  const data = useMemo(() => {
+    const minAmt = Math.min(...receivables.map((r) => r.amount));
+    const maxAmt = Math.max(...receivables.map((r) => r.amount));
+    const radius = (a: number) => 4 + ((a - minAmt) / (maxAmt - minAmt)) * 16;
+
+    const riskColor = (p: number | null | undefined) => {
+      const prob = p ?? 0;
+      if (prob >= 90) return COLORS.INCOME;
+      if (prob >= 70) return COLORS.WARNING;
+      return COLORS.ERROR;
+    };
+
+    return receivables.map((r) => ({
+      x: r.daysLate ?? 0,
+      y: r.probabilityOfPayment ?? 0,
+      size: radius(r.amount),
+      fill: riskColor(r.probabilityOfPayment),
+      label: `${r.invoiceNumber}\n$${r.amount.toLocaleString()}\n${r.client.name}`,
+    }));
+  }, [receivables]);
+
+  return (
+    <group position={[0, 0, -2]} /* rotation={[-15 * (Math.PI / 180), 0, 0]} */>
+      <Html
+        transform
+        distanceFactor={8}
+        style={{
+          width: '900px',
+          height: '600px',
+          pointerEvents: 'auto',
+          background: 'transparent'
+        }}
+        className="timeline-chart-html"
+      >
+        {/* This div acts as a boundary that prevents R3F from processing the SVG */}
+        <div style={{
+          width: '100%',
+          height: '100%',
+          background: COLORS.CARD_BG,
+          borderRadius: '8px',
+          padding: '10px',
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+          border: `1px solid ${COLORS.PRIMARY}`
+        }}>
+          <VictoryChart
+            width={880}
+            height={580}
+            padding={{ top: 40, bottom: 60, left: 70, right: 40 }}
+            containerComponent={<VictoryContainer responsive={false} />}
+          >
+            <VictoryAxis
+              dependentAxis
+              label="Probability of Payment (%)"
+              style={{
+                axisLabel: { fill: COLORS.PRIMARY, fontSize: 12 },
+                tickLabels: { fill: COLORS.MUTED, fontSize: 10 },
+                grid: { stroke: COLORS.DARK_MUTED, strokeDasharray: '3,3' },
+              }}
+            />
+            <VictoryAxis
+              label="Days Late"
+              style={{
+                axisLabel: { fill: COLORS.PRIMARY, fontSize: 12 },
+                tickLabels: { fill: COLORS.MUTED, fontSize: 10 },
+                grid: { stroke: COLORS.DARK_MUTED, strokeDasharray: '3,3' },
+              }}
+            />
+            <VictoryScatter
+              data={data}
+              size={(d) => d.size}
+              style={{ data: { fill: ({ datum }: any) => datum.fill } }}
+              labelComponent={
+                <VictoryTooltip
+                  style={{ fontSize: 10, fill: COLORS.TEXT }}
+                  flyoutStyle={{
+                    fill: COLORS.CARD_BG,
+                    stroke: COLORS.PRIMARY,
+                    strokeWidth: 1
+                  }}
+                />
+              }
+            />
+            <VictoryLegend
+              x={700}
+              y={20}
+              orientation="horizontal"
+              gutter={20}
+              style={{ labels: { fill: COLORS.MUTED, fontSize: 10 } }}
+              data={[
+                { name: 'High ≥90%', symbol: { fill: COLORS.INCOME } },
+                { name: 'Med 70-89%', symbol: { fill: COLORS.WARNING } },
+                { name: 'Low <70%', symbol: { fill: COLORS.ERROR } },
+              ]}
+            />
+          </VictoryChart>
+        </div>
+      </Html>
+    </group>
+  );
+}
+// components/TimelineChart2D.tsx
+import {
+  VictoryAxis,
+  VictoryChart,
+  VictoryLegend,
+  VictoryScatter,
+  VictoryTooltip,
+} from 'victory';
+import { COLORS } from '../../colors';
+import type { AccountsReceivable } from '../receivable';
+
+interface TimelineChart2DProps {
+  receivables: AccountsReceivable[];
+}
+
+export default function TimelineChart2D({ receivables }: TimelineChart2DProps) {
+  const data = receivables.map((r) => ({
+    x: r.daysLate ?? 0,
+    y: r.probabilityOfPayment ?? 0,
+    size: Math.max(4, Math.min(20, (r.amount / 5000) * 1)),
+    fill: r.probabilityOfPayment !== null && r.probabilityOfPayment !== undefined
+  ? r.probabilityOfPayment >= 90
+    ? COLORS.INCOME
+    : r.probabilityOfPayment >= 70
+      ? COLORS.WARNING
+      : COLORS.ERROR
+  : COLORS.ERROR,
+    label: `${r.invoiceNumber}\n$${r.amount.toLocaleString()}\n${r.client.name}`,
+  }));
+  console.log("Data:", data);
+
+  return (
+    <div className="timeline-chart-2d" style={{paddingTop: 24, overflow: "hidden"}}>
+      <VictoryChart
+        width={800}
+        height={500}
+      >
+        <VictoryAxis
+          dependentAxis
+          label="Probability of Payment (%)"
+          style={{
+            axisLabel: { fill: COLORS.PRIMARY, fontSize: 12 },
+            tickLabels: { fill: COLORS.MUTED, fontSize: 10 },
+            grid: { stroke: COLORS.DARK_MUTED, strokeDasharray: '3,3' },
+          }}
+        />
+        <VictoryAxis
+          label="Days Late"
+          style={{
+            axisLabel: { fill: COLORS.PRIMARY, fontSize: 12 },
+            tickLabels: { fill: COLORS.MUTED, fontSize: 10 },
+            grid: { stroke: COLORS.DARK_MUTED, strokeDasharray: '3,3' },
+          }}
+        />
+        <VictoryScatter
+          data={data}
+          size={(d) => d.size}
+          style={{ data: { fill: ({ datum }) => datum.fill } }}
+          labelComponent={
+            <VictoryTooltip
+              style={{ fontSize: 10, fill: COLORS.TEXT }}
+              flyoutStyle={{
+                fill: '#000',
+                stroke: COLORS.PRIMARY,
+                strokeWidth: 1,
+                opacity: 0.9,
+              }}
+            />
+          }
+        />
+        <VictoryLegend
+          x={600}
+          y={20}
+          orientation="horizontal"
+          gutter={20}
+          style={{ labels: { fill: COLORS.MUTED, fontSize: 10 } }}
+          data={[
+            { name: 'High ≥90%', symbol: { fill: COLORS.INCOME } },
+            { name: 'Med 70–89%', symbol: { fill: COLORS.WARNING } },
+            { name: 'Low <70%', symbol: { fill: COLORS.ERROR } },
+          ]}
+        />
+      </VictoryChart>
+    </div>
+  );
+}
+// components/ReceivablesAgingChart.tsx
+import { useState } from 'react'
+import { COLORS } from '../../colors'
+import type { AccountsReceivable } from '../receivable'
+import ReceivableDetail from './ReceivableDetail'
+import './AgingChart.scss'
+
+type AgingBucketKey = '0-30' | '31-60' | '61-90' | '90+'
+
+interface ReceivablesAgingChartProps {
+  receivables: AccountsReceivable[]
+}
+
+export default function ReceivablesAgingChart({ receivables }: ReceivablesAgingChartProps) {
+  const [hoveredBucket, setHoveredBucket] = useState<AgingBucketKey | null>(null)
+  const [selectedReceivable, setSelectedReceivable] = useState<AccountsReceivable | null>(null)
+
+  // Define aging buckets with proper typing
+  const agingBuckets: Record<AgingBucketKey, AccountsReceivable[]> = {
+    '0-30': receivables.filter(r => (r.daysLate || 0) <= 30),
+    '31-60': receivables.filter(r => (r.daysLate || 0) > 30 && (r.daysLate || 0) <= 60),
+    '61-90': receivables.filter(r => (r.daysLate || 0) > 60 && (r.daysLate || 0) <= 90),
+    '90+': receivables.filter(r => (r.daysLate || 0) > 90)
+  }
+
+  // Calculate totals for each bucket
+  const bucketTotals = Object.entries(agingBuckets).reduce((acc, [range, items]) => {
+    acc[range as AgingBucketKey] = items.reduce((sum, r) => sum + r.amount, 0)
+    return acc
+  }, {} as Record<AgingBucketKey, number>)
+
+  // Calculate total outstanding
+  const totalOutstanding = receivables.reduce((sum, r) => sum + r.amount, 0)
+
+  // Get color based on aging bucket
+  const getBucketColor = (range: AgingBucketKey): string => {
+    switch (range) {
+      case '0-30': return COLORS.INCOME
+      case '31-60': return COLORS.WARNING
+      case '61-90': return COLORS.EXPENSE
+      case '90+': return COLORS.CRITICAL
+      default: return COLORS.PRIMARY
+    }
+  }
+
+  // Handle clicking on a bucket to see details
+  const handleBucketClick = (bucket: AgingBucketKey) => {
+    const bucketItems = agingBuckets[bucket]
+    setSelectedReceivable(bucketItems[0] || null)
+  }
+
+  // Handle hover over a bucket
+  const handleBucketHover = (bucket: AgingBucketKey) => {
+    setHoveredBucket(bucket)
+  }
+
+  // Handle mouse leave
+  const handleMouseLeave = () => {
+    setHoveredBucket(null)
+    setSelectedReceivable(null)
+  }
+
+  // Format currency
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0
+    }).format(amount)
+  }
+
+  return (
+    <group>
+      {/* Main Chart Container */}
+        <div className="aging-chart-container">
+          <div className="chart-header">
+            <div className="total-outstanding">
+              <span className="label">Total Outstanding:</span>
+              <span className="value">{formatCurrency(totalOutstanding)}</span>
+            </div>
+            <div className="status-summary">
+              <div className="status-item">
+                <span className="label">Current:</span>
+                <span className="value">{agingBuckets['0-30'].length}</span>
+              </div>
+              <div className="status-item">
+                <span className="label">Overdue:</span>
+                <span className="value">
+                  {agingBuckets['31-60'].length + agingBuckets['61-90'].length + agingBuckets['90+'].length}
+                </span>
+              </div>
+              <div className="status-item">
+                <span className="label">High Risk:</span>
+                <span className="value">{agingBuckets['90+'].length}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Bar Chart */}
+          <div className="bar-chart">
+            {(Object.entries(agingBuckets) as [AgingBucketKey, AccountsReceivable[]][]).map(([range, items]) => {
+              const percentage = totalOutstanding > 0 ? (bucketTotals[range] / totalOutstanding) * 100 : 0
+              const isCritical = range === '90+'
+
+              return (
+                <div
+                  key={range}
+                  className={`bar-item ${isCritical ? 'critical' : ''}`}
+                  onMouseEnter={() => handleBucketHover(range)}
+                  onMouseLeave={handleMouseLeave}
+                  onClick={() => handleBucketClick(range)}
+                >
+                  <div
+                    className="bar-fill"
+                    style={{
+                      width: `${percentage}%`,
+                      backgroundColor: getBucketColor(range),
+                      opacity: hoveredBucket === range ? 0.8 : 0.6
+                    }}
+                  />
+                  <div className="bar-labels">
+                    <span className="range">{range} Days</span>
+                    <span className="count">{items.length} invoices</span>
+                    <span className="amount">{formatCurrency(bucketTotals[range])}</span>
+                    <span className="percentage">{percentage.toFixed(1)}%</span>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Legend */}
+          <div className="legend">
+            <div className="legend-item">
+              <div className="color-box" style={{ backgroundColor: COLORS.INCOME }}></div>
+              <span>0–30 days</span>
+            </div>
+            <div className="legend-item">
+              <div className="color-box" style={{ backgroundColor: COLORS.WARNING }}></div>
+              <span>31–60 days</span>
+            </div>
+            <div className="legend-item">
+              <div className="color-box" style={{ backgroundColor: COLORS.EXPENSE }}></div>
+              <span>61–90 days</span>
+            </div>
+            <div className="legend-item">
+              <div className="color-box" style={{ backgroundColor: COLORS.CRITICAL }}></div>
+              <span>90+ days</span>
+            </div>
+          </div>
+        </div>
+
+      {/* Detail Panel */}
+      {selectedReceivable && (
+        <ReceivableDetail
+          receivable={selectedReceivable}
+          onClose={() => setSelectedReceivable(null)}
+        />
+      )}
+    </group>
+  )
+}
+import { useState } from 'react'
+import { COLORS } from '../../colors'
+import type { AccountsReceivable } from '../receivable'
+import '../../scss/glow.scss'
+import "./ReceivableDetail.scss";
+
+interface ReceivableDetailProps {
+  receivable: AccountsReceivable
+  onClose: () => void
+}
+
+export default function ReceivableDetail({ receivable, onClose }: ReceivableDetailProps) {
+  const [hovered, setHovered] = useState(false)
+  const paymentProbability = receivable.probabilityOfPayment || 0
+
+  // Status indicator color
+  const statusColor = getStatusColor(receivable)
+
+  return (
+    <div className="receivable-detail-wrapper">
+      {/* HTML Overlay */}
+      <div className="receivable-detail-container">
+        {/* Header */}
+        <div className="detail-header">
+          <h2>{receivable.client.name}</h2>
+          <div className="invoice-number">{receivable.invoiceNumber}</div>
+        </div>
+
+        {/* Main info */}
+        <div className="detail-content">
+          <div className="detail-row">
+            <span className="label">Amount:</span>
+            <span className="value">${receivable.amount.toLocaleString()}</span>
+          </div>
+          <div className="detail-row">
+            <span className="label">Issued:</span>
+            <span className="value">{new Date(receivable.issuedDate).toLocaleDateString()}</span>
+          </div>
+          <div className="detail-row">
+            <span className="label">Due:</span>
+            <span className="value">{new Date(receivable.dueDate || '').toLocaleDateString()}</span>
+          </div>
+          <div className="detail-row">
+            <span className="label">Days Late:</span>
+            <span className="value" style={{ color: statusColor }}>
+              {receivable.daysLate || 0}
+            </span>
+          </div>
+          <div className="detail-row">
+            <span className="label">Status:</span>
+            <span className="value" style={{ color: statusColor }}>
+              {receivable.collectionStage.replace('_', ' ')}
+            </span>
+          </div>
+        </div>
+
+        {/* Probability meter */}
+        <div className="probability-meter">
+          <div className="meter-label">Payment Probability</div>
+          <div className="meter-bar">
+            <div
+              className="meter-fill"
+              style={{
+                width: `${paymentProbability * 100}%`,
+                background: `linear-gradient(90deg, ${COLORS.INCOME}, ${statusColor})`
+              }}
+            />
+            <div className="meter-value">{Math.round(paymentProbability * 100)}%</div>
+          </div>
+        </div>
+
+        {/* Close button */}
+        <button
+          className={`detail-close-btn ${hovered ? 'hover' : ''}`}
+          onClick={onClose}
+          onPointerOver={() => setHovered(true)}
+          onPointerOut={() => setHovered(false)}
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// Helper function
+function getStatusColor(receivable: AccountsReceivable): string {
+  const daysLate = receivable.daysLate || 0
+  if (daysLate <= 30) return COLORS.INCOME
+  if (daysLate <= 60) return COLORS.WARNING
+  return COLORS.EXPENSE
+}
+// receivable.ts
+import type {
+    CollectionStage,
+    BaseEntity,
+    PaymentStatus
+} from "../commonTypes";
+
+export interface Client extends BaseEntity {
+    name: string;
+    creditRating?: string;
+    paymentTerms: number;
+    lastPaymentDate?: string | null;
+}
+
+export interface AccountsReceivable extends BaseEntity {
+    client: Client;
+    invoiceNumber: string;
+    amount: number;
+    issuedDate: string;
+    dueDate?: string | null;
+    daysLate?: number | null;
+    status?: PaymentStatus | null;
+    collectionStage: CollectionStage;
+    probabilityOfPayment?: number | null;
+    lastReminderDate?: string | null;
+}
+
+export interface AccountsReceivableRequest {
+    clientId: number;
+    invoiceNumber: string;
+    amount: number;
+    issuedDate: string;
+    dueDate?: string | null;
+    daysLate?: number | null;
+    status?: PaymentStatus | null;
+    collectionStage: CollectionStage;
+    probabilityOfPayment?: number | null;
+    lastReminderDate?: string | null;
+}
+
+export interface ClientRequest {
+    legalName: string;
+    creditRating?: string | null;
+    paymentTerms: number;
+    lastPaymentDate?: string | null;
+}
+
+export interface ClientResponse extends BaseEntity {
+    legalName: string;
+    creditRating?: string | null;
+    paymentTerms: number;
+    lastPaymentDate?: string | null;
+    createdAt: string;
+}
+import api from '../api';
+import { MockDataService } from '../MockDataService';
+import type { CollectionStage } from '../commonTypes';
+import type {
+  AccountsReceivable,
+  Client,
+  AccountsReceivableRequest,
+  ClientRequest
+} from './receivable';
+
+// 🎯 Set to true to use mock data, false for real API
+const USE_MOCK_DATA = true;
+
+const DEBUG_PREFIX = '[ReceivableService]';
+const debugLog = (message: string, data?: any) => {
+  const DEBUG_MODE = false;
+  if (DEBUG_MODE) {
+    const timestamp = new Date().toISOString();
+    console.log(`${DEBUG_PREFIX} [${timestamp}] ${message}`, data);
+  }
+};
+
+export const ReceivableService = {
+  async getAllClients(): Promise<Client[]> {
+    debugLog('getAllClients: Starting request');
+
+    if (USE_MOCK_DATA) {
+      const data = await MockDataService.getClients();
+      debugLog('getAllClients: Mock Success', { count: data.length });
+      return data;
+    }
+
+    try {
+      const response = await api.get<Client[]>('/receivables/clients');
+      debugLog('getAllClients: API Success', { count: response.data.length });
+      return response.data;
+    } catch (error) {
+      debugLog('getAllClients: Error', error);
+      throw error;
+    }
+  },
+
+  async createClient(client: ClientRequest): Promise<Client> {
+    debugLog('createClient: Starting request', client);
+
+    if (USE_MOCK_DATA) {
+      const newClient: Client = {
+        id: Math.floor(Math.random() * 10000),
+        name: client.legalName,
+        creditRating: client.creditRating || 'B',
+        paymentTerms: client.paymentTerms,
+        lastPaymentDate: client.lastPaymentDate,
+        createdAt: new Date().toISOString(),
+      };
+      debugLog('createClient: Mock Success', { id: newClient.id });
+      return newClient;
+    }
+
+    try {
+      const response = await api.post<Client>('/receivables/clients', client);
+      debugLog('createClient: API Success', { id: response.data.id });
+      return response.data;
+    } catch (error) {
+      debugLog('createClient: Error', error);
+      throw error;
+    }
+  },
+
+  async getReceivables(): Promise<AccountsReceivable[]> {
+    debugLog('getReceivables: Starting request');
+
+    if (USE_MOCK_DATA) {
+      const data = await MockDataService.getReceivables();
+      debugLog('getReceivables: Mock Success', { count: data.length });
+      return data;
+    }
+
+    try {
+      const response = await api.get<AccountsReceivable[]>('/receivables/');
+      debugLog('getReceivables: API Success', { count: response.data.length });
+      return response.data;
+    } catch (error) {
+      debugLog('getReceivables: Error', error);
+      throw error;
+    }
+  },
+
+  async createReceivable(receivable: AccountsReceivableRequest): Promise<AccountsReceivable> {
+    debugLog('createReceivable: Starting request', receivable);
+
+    if (USE_MOCK_DATA) {
+      const clients = await MockDataService.getClients();
+      const client = clients.find(c => c.id === receivable.clientId) || clients[0];
+
+      const newReceivable: AccountsReceivable = {
+        id: Math.floor(Math.random() * 10000),
+        client,
+        invoiceNumber: receivable.invoiceNumber,
+        amount: receivable.amount,
+        issuedDate: receivable.issuedDate,
+        dueDate: receivable.dueDate,
+        daysLate: receivable.daysLate || 0,
+        status: receivable.status || 'PENDING',
+        collectionStage: receivable.collectionStage,
+        probabilityOfPayment: receivable.probabilityOfPayment || 0.8,
+        lastReminderDate: receivable.lastReminderDate,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      debugLog('createReceivable: Mock Success', { id: newReceivable.id });
+      return newReceivable;
+    }
+
+    try {
+      const response = await api.post<AccountsReceivable>('/receivables/', receivable);
+      debugLog('createReceivable: API Success', { id: response.data.id });
+      return response.data;
+    } catch (error) {
+      debugLog('createReceivable: Error', error);
+      throw error;
+    }
+  },
+
+  async updateCollectionStatus(id: number, status: CollectionStage): Promise<AccountsReceivable> {
+    debugLog('updateCollectionStatus: Starting request', { id, status });
+
+    if (USE_MOCK_DATA) {
+      const allData = await MockDataService.getReceivables();
+      const found = allData.find(item => item.id === id);
+      if (!found) throw new Error('Receivable not found');
+
+      const updated = {
+        ...found,
+        collectionStage: status,
+        updatedAt: new Date().toISOString()
+      };
+      debugLog('updateCollectionStatus: Mock Success', { id });
+      return updated;
+    }
+
+    try {
+      const response = await api.put<AccountsReceivable>(
+        `/receivables/${id}/status?status=${status}`
+      );
+      debugLog('updateCollectionStatus: API Success', { id });
+      return response.data;
+    } catch (error) {
+      debugLog('updateCollectionStatus: Error', error);
+      throw error;
+    }
+  },
+
+  async getAgingReport(): Promise<AccountsReceivable[]> {
+    debugLog('getAgingReport: Starting request');
+
+    if (USE_MOCK_DATA) {
+      const data = await MockDataService.getReceivables();
+      debugLog('getAgingReport: Mock Success', { count: data.length });
+      return data;
+    }
+
+    try {
+      const response = await api.get<AccountsReceivable[]>('/receivables/aging/');
+      debugLog('getAgingReport: API Success', { count: response.data.length });
+      return response.data;
+    } catch (error) {
+      debugLog('getAgingReport: Error', error);
+      throw error;
+    }
+  }
+};
+// Receivables.tsx
+import { Html, Text } from '@react-three/drei';
+import { useAtom } from 'jotai';
+import { atomWithStorage } from 'jotai/utils';
+import React, { useEffect, Suspense } from 'react';
+import "./Receivables.scss";
+import { COLORS } from '../colors';
+import { receivablesDataAtom } from '../atoms/dataAtoms';
+import type { AccountsReceivable } from './receivable';
+import { ReceivableService } from './ReceivableService';
+
+/* --------------  atoms  -------------------------------------------------- */
+const receivablesAtom = atomWithStorage<AccountsReceivable[]>('receivables/data', []);
+const loadingAtom = atomWithStorage<boolean>('receivables/loading', false);
+const activeViewAtom = atomWithStorage<'connections' | 'timeline' | 'risk' | 'aging'>('receivables/view', 'connections');
+const selectedReceivableAtom = atomWithStorage<AccountsReceivable | null>('receivables/selected', null);
+
+/* --------------  lazy view components  ----------------------------------- */
+const ReceivableConnections = React.lazy(() => import('./components/ReceivableConnections'));
+const RiskScatterPlot = React.lazy(() => import('./components/RiskScatterPlot'));
+const RiskDistributionBar = React.lazy(() => import('./components/RiskDistributionBar'));
+const ReceivablesAgingChart = React.lazy(() => import('./components/AgingChart'));
+const ReceivableDetail = React.lazy(() => import('./components/ReceivableDetail'));
+const TimelineChart2D = React.lazy(() => import('./components/TimelineChart2D'));
+
+/* =========================================================================
+   Main Receivables component
+   ========================================================================= */
+export default function Receivables({ position }: { position: [number, number, number] }) {
+  position[1] -= 0.25;
+
+  const [globalReceivablesData] = useAtom(receivablesDataAtom);
+  const [appLoading] = useAtom(loadingAtom);
+
+  const [receivables, setReceivables] = useAtom(receivablesAtom);
+  const [loading, setLoading] = useAtom(loadingAtom);
+  const [activeView, setActiveView] = useAtom(activeViewAtom);
+  const [selectedReceivable, setSelectedReceivable] = useAtom(selectedReceivableAtom);
+
+  const safeReceivables = Array.isArray(receivables) ? receivables : [];
+
+  useEffect(() => {
+    const load = async () => {
+      setLoading(true);
+      try {
+        if (globalReceivablesData.length) {
+          setReceivables(globalReceivablesData);
+        } else {
+          const data = await ReceivableService.getReceivables();
+          setReceivables(data);
+        }
+      } catch (e) {
+        console.error(e);
+        setReceivables([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, [globalReceivablesData, setReceivables, setLoading]);
+
+  if (appLoading) {
+    return (
+      <group position={position}>
+        <Text
+          position={[0, 0, 0]}
+          fontSize={0.4}
+          color={COLORS.PRIMARY}
+          anchorX="center"
+          anchorY="middle"
+          font="/fonts/orbitron-medium.otf"
+        >
+          Loading application data…
+        </Text>
+      </group>
+    );
+  }
+
+  if (loading) {
+    return (
+      <group position={position}>
+        <Text
+          position={[0, 0, 0]}
+          fontSize={0.4}
+          color={COLORS.PRIMARY}
+          anchorX="center"
+          anchorY="middle"
+          font="/fonts/orbitron-medium.otf"
+        >
+          Loading…
+        </Text>
+      </group>
+    );
+  }
+
+    return (
+      <Html
+        style={{
+          width: '100%',
+          height: '100%',
+          pointerEvents: 'auto',
+        }}
+        position={[0, 0, 0]}
+        className="receivables-main-wrapper"
+        transform
+      >
+        <div className="receivables-dashboard">
+          {/* Fixed Header - Tabs at the top */}
+          <div className="dashboard-header">
+            <div className="tabs">
+              {(['connections', 'timeline', 'risk', 'aging'] as const).map((v) => (
+                <button
+                  key={v}
+                  className={`tab-button ${activeView === v ? 'active' : ''}`}
+                  onClick={() => setActiveView(v)}
+                >
+                  {v === 'connections' ? 'Connections' : v === 'timeline' ? 'Payment Timeline' : v === 'risk' ? 'Risk' : 'Aging'}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Main Content Area */}
+          <div className="chart-container">
+            {activeView === 'connections' && (
+              <Suspense fallback={<div style={{ color: 'white' }}>Loading connections chart...</div>}>
+                <ReceivableConnections receivables={safeReceivables} />
+              </Suspense>
+            )}
+
+            {activeView === 'risk' && (
+              <div style={{ display: 'flex', flexDirection: 'row', gap: '20px', color: 'white', paddingTop: 60 }}>
+                <Suspense fallback={<div>Loading risk charts...</div>}>
+                  <RiskScatterPlot receivables={safeReceivables} />
+                </Suspense>
+                <Suspense fallback={<div>Loading risk distribution...</div>}>
+                  <RiskDistributionBar receivables={safeReceivables} />
+                </Suspense>
+              </div>
+            )}
+
+            {activeView === 'aging' && (
+              <Suspense fallback={<div>Loading aging chart...</div>}>
+                <ReceivablesAgingChart receivables={safeReceivables} />
+              </Suspense>
+            )}
+
+            {activeView === 'timeline' && (
+              <Suspense fallback={<div>Loading timeline chart...</div>}>
+                <TimelineChart2D receivables={safeReceivables} />
+              </Suspense>
+            )}
+          </div>
+        </div>
+
+        {/* Detail Panel */}
+        {selectedReceivable && (
+          <Suspense fallback={null}>
+            <ReceivableDetail
+              receivable={selectedReceivable}
+              onClose={() => setSelectedReceivable(null)}
+            />
+          </Suspense>
+        )}
+      </Html>
+  );
+}

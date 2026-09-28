@@ -1,0 +1,130 @@
+// Receivables.scss
+@use '../scss/components' as c;
+@use '../scss/vars' as v;
+
+.receivables-main-wrapper {
+  pointer-events: none !important;
+}
+
+.receivables-dashboard {
+  @include c.mm_container;
+  width: 800px;
+  height: 540px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  pointer-events: auto;
+  background: rgba(v.$black, 0.8);
+  border: 1px solid v.$primary;
+  box-shadow: 0 0 20px rgba(v.$primary, 0.3);
+
+  .glow-effect {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.25;
+    border-radius: inherit;
+    background: radial-gradient(
+      circle at center,
+      rgba(v.$primary, 0.6) 0%,
+      rgba(v.$black, 0.8) 70%
+    );
+    filter: blur(6px);
+  }
+
+  // ========================
+  // Dashboard Header & Tabs
+  // ========================
+  .dashboard-header {
+    padding: v.$spacing-md v.$spacing-lg;
+    border-bottom: 1px solid v.$primary;
+    background: rgba(v.$black, 0.6);
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .tabs {
+      display: flex;
+      gap: v.$spacing-xs;
+      justify-content: center;
+      margin-top: v.$spacing-sm;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      .tab-button {
+        @include c.civ-glow-active;
+        padding: v.$spacing-xs v.$spacing-md;
+        background: transparent;
+        border: 1px solid transparent;
+        color: v.$gray-light;
+        font-size: v.$font-size-xxs;
+        font-family: v.$font-primary;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: all v.$transition-normal;
+        min-width: 80px;
+        border-radius: 4px;
+        white-space: nowrap;
+
+        &:focus {
+          outline: none;
+        }
+
+
+      }
+    }
+  }
+
+  // ========================
+  // Chart Container
+  // ========================
+  .chart-container {
+    @include c.custom-scrollbar;
+    flex: 1;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+    background: rgba(v.$black, 0.3);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    overflow-x: hidden;
+    color: v.$gray-light;
+    font-family: v.$font-primary;
+
+    > div {
+      width: 100%;
+      max-width: 700px;
+    }
+  }
+}
+
+// Media queries for responsive design
+@media (max-width: 768px) {
+  .receivables-dashboard {
+    width: 95vw;
+    height: 90vh;
+
+    .dashboard-header {
+      padding: v.$spacing-sm;
+
+      .tabs {
+        gap: v.$spacing-xxs;
+
+        .tab-button {
+          padding: v.$spacing-xxs v.$spacing-sm;
+          min-width: 70px;
+          font-size: v.$font-size-xxs;
+        }
+      }
+    }
+
+  }
+}

@@ -1,0 +1,10 @@
+@use './vars.scss' as v;
+
+body {
+  font-family: v.$font-primary;
+  color: v.$white;
+  background-color: v.$black;
+}
+
+@include generate-glow-effects;
+

@@ -1,0 +1,252 @@
+@use '../../scss/vars' as v;
+@use '../../scss/components' as c;
+
+.chart-of-accounts-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: rgba(v.$black, 0.4);
+  border-radius: v.$border-radius;
+  overflow: hidden;
+  border: 1px solid rgba(v.$primary, 0.2);
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: v.$spacing-md;
+  border-bottom: 1px solid rgba(v.$primary, 0.2);
+  background: rgba(v.$black, 0.6);
+
+  h3 {
+    margin: 0;
+    color: v.$primary;
+    font-size: v.$font-size-sm;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .add-account-btn {
+    @include c.button-primary;
+    padding: v.$spacing-xs v.$spacing-sm;
+    font-size: v.$font-size-xxs;
+    text-transform: uppercase;
+  }
+}
+
+.accounts-tree {
+  flex: 1;
+  overflow-y: auto;
+  padding: v.$spacing-sm;
+  @include c.custom-scrollbar;
+}
+
+.category-group {
+  margin-bottom: v.$spacing-sm;
+}
+
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: v.$spacing-sm;
+  background: rgba(v.$primary, 0.05);
+  border-left: 3px solid v.$primary;
+  cursor: pointer;
+  transition: all v.$transition-fast;
+  border-radius: v.$border-radius-sm;
+
+  &:hover {
+    background: rgba(v.$primary, 0.1);
+    box-shadow: 0 0 10px rgba(v.$primary, 0.1);
+  }
+
+  .category-info {
+    display: flex;
+    align-items: center;
+    gap: v.$spacing-sm;
+    
+    .category-code {
+      font-family: v.$font-mono;
+      color: v.$primary;
+      font-weight: bold;
+      font-size: v.$font-size-xs;
+    }
+
+    .category-name {
+      color: v.$white;
+      font-size: v.$font-size-xs;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .account-count {
+      color: v.$gray-light;
+      font-size: v.$font-size-xxs;
+      background: rgba(v.$white, 0.1);
+      padding: 2px 6px;
+      border-radius: 10px;
+    }
+  }
+
+  .expand-icon {
+    color: v.$primary;
+    font-size: v.$font-size-sm;
+    transition: transform v.$transition-fast;
+  }
+}
+
+.accounts-list {
+  margin-top: v.$spacing-xs;
+  margin-left: v.$spacing-md;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.account-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: v.$spacing-xs v.$spacing-sm;
+  background: rgba(v.$black, 0.3);
+  border: 1px solid transparent;
+  border-radius: v.$border-radius-sm;
+  cursor: pointer;
+  transition: all v.$transition-fast;
+
+  &:hover {
+    border-color: rgba(v.$primary, 0.3);
+    background: rgba(v.$primary, 0.05);
+    transform: translateX(4px);
+  }
+
+  .account-code-name {
+    display: flex;
+    flex-direction: column;
+    
+    .account-code {
+      font-family: v.$font-mono;
+      color: v.$secondary;
+      font-size: v.$font-size-xxs;
+    }
+
+    .account-name {
+      color: v.$white;
+      font-size: v.$font-size-xs;
+    }
+  }
+
+  .account-details {
+    display: flex;
+    gap: v.$spacing-sm;
+    
+    .normal-balance, .status {
+      font-size: v.$font-size-xxs;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      
+      &.debit { color: v.$income; background: rgba(v.$income, 0.1); }
+      &.credit { color: v.$expense; background: rgba(v.$expense, 0.1); }
+      &.active { color: v.$success; background: rgba(v.$success, 0.1); }
+      &.inactive { color: v.$gray-light; background: rgba(v.$gray-light, 0.1); }
+    }
+  }
+}
+
+.account-form-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(v.$black, 0.85);
+  backdrop-filter: blur(5px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease-out;
+
+  .account-form {
+    @include c.card-styles;
+    width: 400px;
+    background: rgba(v.$black, 0.9);
+    border: 1px solid v.$primary;
+    padding: v.$spacing-lg;
+
+    h4 {
+      color: v.$primary;
+      margin-bottom: v.$spacing-md;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .form-group {
+      margin-bottom: v.$spacing-md;
+
+      label {
+        display: block;
+        color: v.$gray-light;
+        font-size: v.$font-size-xxs;
+        margin-bottom: v.$spacing-xxs;
+        text-transform: uppercase;
+      }
+
+      input, select {
+        @include c.form-input;
+        background: rgba(v.$white, 0.05);
+        border-color: rgba(v.$primary, 0.3);
+        color: v.$white;
+        
+        &:focus {
+          border-color: v.$primary;
+          box-shadow: 0 0 8px rgba(v.$primary, 0.2);
+        }
+      }
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: v.$spacing-sm;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: v.$spacing-sm;
+      margin-top: v.$spacing-lg;
+
+      button {
+        @include c.button-reset;
+        padding: v.$spacing-xs v.$spacing-md;
+        border-radius: v.$border-radius-sm;
+        font-size: v.$font-size-xs;
+        cursor: pointer;
+        transition: all v.$transition-fast;
+      }
+
+      .cancel-btn {
+        background: transparent;
+        border: 1px solid v.$gray-light;
+        color: v.$gray-light;
+        &:hover { border-color: v.$white; color: v.$white; }
+      }
+
+      .save-btn {
+        @include c.button-primary;
+        background: v.$primary;
+        color: v.$black;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

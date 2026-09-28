@@ -1,0 +1,141 @@
+@use '../../scss/components' as c;
+@use '../../scss/vars' as v;
+
+.holographic-grid {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  
+  &__container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    animation: pulse v.$animation-duration-normal infinite alternate ease-in-out;
+  }
+
+  &__grid-lines {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    stroke: v.$primary-light;
+    stroke-width: 0.5;
+    stroke-opacity: 0.5;
+    fill: none;
+    
+    &--horizontal {
+      stroke-dasharray: 2, 2;
+    }
+    
+    &--vertical {
+      stroke-dasharray: 2, 2;
+    }
+  }
+
+  &__scanline {
+    position: absolute;
+    width: 100%;
+    height: 2%;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      rgba(v.$primary-light, 0.3),
+      transparent
+    );
+    opacity: 0.3;
+    animation: scan v.$animation-duration-normal * 2 linear infinite;
+    will-change: transform, opacity;
+  }
+
+  &__border {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 1px solid v.$primary-light;
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(v.$primary-light, 0.3);
+  }
+
+  &__corner {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: v.$primary-light;
+    border-radius: 50%;
+    
+    &--top-left {
+      top: -3px;
+      left: -3px;
+    }
+    
+    &--top-right {
+      top: -3px;
+      right: -3px;
+    }
+    
+    &--bottom-left {
+      bottom: -3px;
+      left: -3px;
+    }
+    
+    &--bottom-right {
+      bottom: -3px;
+      right: -3px;
+    }
+  }
+
+  &__glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(v.$primary-light, 0.1) 0%,
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    
+    .holographic-grid__container:hover & {
+      opacity: 0.5;
+    }
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(0.98);
+      opacity: 0.8;
+    }
+    100% {
+      transform: scale(1.02);
+      opacity: 1;
+    }
+  }
+
+  @keyframes scan {
+    0% {
+      transform: translateY(-50%);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.3;
+    }
+    90% {
+      opacity: 0.3;
+    }
+    100% {
+      transform: translateY(1000%);
+      opacity: 0;
+    }
+  }
+
+  @media (max-width: 768px) {
+    &__grid-lines {
+      stroke-width: 0.3;
+    }
+    
+    &__corner {
+      width: 4px;
+      height: 4px;
+    }
+  }
+}

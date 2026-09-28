@@ -1,0 +1,171 @@
+// ActualForm.scss
+@use '../../scss/components' as c;
+@use '../../scss/vars' as v;
+
+.actual-form {
+  &__container {
+    @include c.card-styles;
+    width: 400px;
+    backdrop-filter: blur(10px);
+    background: rgba(c.$card-bg, 0.85);
+    padding: v.$spacing-lg;
+    position: relative;
+    border: 1px solid rgba(v.$primary, 0.3);
+    box-shadow: 0 0 30px 5px rgba(v.$primary, 0.1);
+
+    .glow-effect {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: -1;
+      opacity: 0.3;
+      border-radius: inherit;
+      background: radial-gradient(
+        circle at center,
+        rgba(v.$primary, 0.6) 0%,
+        rgba(v.$primary, 0) 70%
+      );
+      filter: blur(3px);
+
+      &--primary {
+        background: radial-gradient(
+          circle at center,
+          rgba(v.$primary, 0.6) 0%,
+          rgba(v.$primary, 0) 70%
+        );
+      }
+
+      &--expense {
+        background: radial-gradient(
+          circle at center,
+          rgba(v.$expense, 0.6) 0%,
+          rgba(v.$expense, 0) 70%
+        );
+      }
+    }
+  }
+
+  &__title {
+    color: v.$primary;
+    font-size: v.$font-size-md;
+    margin-bottom: v.$spacing-lg;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: v.$font-primary;
+  }
+
+  &__input-group {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: v.$spacing-md;
+  }
+
+  &__label {
+    display: block;
+    color: v.$gray-light;
+    font-size: v.$font-size-xxs;
+    margin-bottom: v.$spacing-xxs;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &__input {
+    box-sizing: border-box;
+    width: 100%;
+    @include c.form-input;
+    background: rgba(v.$white, 0.05);
+    border: 1px solid rgba(v.$primary, 0.3);
+    color: v.$white;
+    font-family: v.$font-mono;
+    transition: all 0.2s ease;
+
+    &:focus {
+      border-color: v.$primary;
+      box-shadow: 0 0 5px 1px rgba(v.$primary, 0.3);
+    }
+
+    &[type="number"] {
+      font-family: v.$font-mono;
+    }
+
+    &[type="date"] {
+      &::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+        opacity: 0.7;
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  &__error {
+    color: v.$error;
+    font-size: v.$font-size-xxs;
+    margin-top: v.$spacing-xxs;
+    font-family: v.$font-primary;
+  }
+
+  &__button {
+    @include c.button-primary;
+    width: auto;
+    flex: 1;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: v.$font-size-xs;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 10px rgba(v.$primary, 0.2);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &--primary {
+      background-color: v.$primary;
+    }
+
+    &--expense {
+      background-color: v.$expense;
+
+      &:hover {
+        box-shadow: 0 5px 10px rgba(v.$expense, 0.2);
+      }
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: v.$spacing-sm;
+    margin-top: v.$spacing-lg;
+  }
+}
+
+@media (max-width: 768px) {
+  .actual-form {
+    &__container {
+      width: 90vw;
+      padding: v.$spacing-md;
+    }
+
+    &__buttons {
+      flex-direction: column;
+      gap: v.$spacing-sm;
+    }
+
+    &__button {
+      width: 100%;
+    }
+  }
+}

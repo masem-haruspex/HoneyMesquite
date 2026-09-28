@@ -1,0 +1,329 @@
+@use '../../scss/vars' as v;
+@use '../../scss/components' as c;
+
+.period-close-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: rgba(v.$black, 0.4);
+  border-radius: v.$border-radius;
+  overflow: hidden;
+  border: 1px solid rgba(v.$primary, 0.2);
+}
+
+.period-close-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: v.$spacing-md;
+  border-bottom: 1px solid rgba(v.$primary, 0.2);
+  background: rgba(v.$black, 0.6);
+
+  h3 {
+    margin: 0;
+    color: v.$primary;
+    font-size: v.$font-size-sm;
+    text-transform: uppercase;
+  }
+
+  .header-info {
+    display: flex;
+    align-items: center;
+    gap: v.$spacing-md;
+    color: v.$gray-light;
+    font-size: v.$font-size-xs;
+
+    .new-period-btn {
+      @include c.button-primary;
+      padding: v.$spacing-xs v.$spacing-sm;
+      font-size: v.$font-size-xxs;
+      background: v.$primary;
+      color: v.$black;
+      font-weight: bold;
+    }
+  }
+}
+
+.periods-list {
+  flex: 1;
+  overflow-y: auto;
+  @include c.custom-scrollbar;
+
+  .periods-table-header, .periods-table-body {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 100px 100px 100px 100px 120px;
+    gap: v.$spacing-xs;
+    padding: v.$spacing-xs v.$spacing-md;
+    align-items: center;
+    min-width: 800px;
+  }
+
+  .periods-table-header {
+    position: sticky;
+    top: 0;
+    background: rgba(v.$black, 0.8);
+    backdrop-filter: blur(5px);
+    border-bottom: 1px solid rgba(v.$primary, 0.3);
+    z-index: 10;
+
+    .header-cell {
+      color: v.$gray-light;
+      font-size: v.$font-size-xxs;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+  }
+
+  .periods-table-body {
+    .period-row {
+      display: contents;
+
+      > div {
+        padding: v.$spacing-xs v.$spacing-sm;
+        border-bottom: 1px solid rgba(v.$primary, 0.1);
+        color: v.$white;
+        font-size: v.$font-size-xs;
+        display: flex;
+        align-items: center;
+      }
+
+      &:hover > div {
+        background: rgba(v.$primary, 0.05);
+      }
+
+      .name { font-weight: bold; color: v.$primary; }
+      .dates { font-family: v.$font-mono; color: v.$gray-light; font-size: v.$font-size-xxs; }
+      .type { text-transform: uppercase; color: v.$secondary; }
+      
+      .status-badge {
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: v.$font-size-xxs;
+        text-transform: uppercase;
+        font-weight: bold;
+        text-align: center;
+        width: fit-content;
+      }
+
+      .actions {
+        display: flex;
+        gap: v.$spacing-xs;
+
+        button {
+          @include c.button-reset;
+          padding: v.$spacing-xxs v.$spacing-sm;
+          border-radius: 4px;
+          font-size: v.$font-size-xxs;
+          cursor: pointer;
+          text-transform: uppercase;
+          border: 1px solid transparent;
+        }
+
+        .close-btn {
+          background: v.$warning;
+          color: v.$black;
+          &:hover { box-shadow: 0 0 8px rgba(v.$warning, 0.4); }
+        }
+
+        .lock-btn {
+          background: v.$error;
+          color: v.$white;
+          &:hover { box-shadow: 0 0 8px rgba(v.$error, 0.4); }
+        }
+
+        .locked-text {
+          color: v.$gray-light;
+          font-style: italic;
+        }
+      }
+    }
+  }
+}
+
+.closing-checklist {
+  padding: v.$spacing-md;
+  background: rgba(v.$black, 0.5);
+  border-top: 1px solid rgba(v.$primary, 0.2);
+
+  h4 {
+    margin: 0 0 v.$spacing-md 0;
+    color: v.$primary;
+    font-size: v.$font-size-xs;
+    text-transform: uppercase;
+  }
+
+  .checklist-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: v.$spacing-sm;
+
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: v.$spacing-sm;
+      color: v.$white;
+      font-size: v.$font-size-xs;
+      
+      input[type="checkbox"] {
+        accent-color: v.$primary;
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+      }
+
+      label {
+        cursor: pointer;
+        user-select: none;
+      }
+    }
+  }
+}
+
+.period-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: v.$spacing-md;
+  background: rgba(v.$black, 0.6);
+  border-top: 1px solid rgba(v.$primary, 0.2);
+
+  .summary-stats {
+    display: flex;
+    gap: v.$spacing-lg;
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      
+      .stat-label {
+        color: v.$gray-light;
+        font-size: v.$font-size-xxs;
+        text-transform: uppercase;
+      }
+      
+      .stat-value {
+        color: v.$primary;
+        font-family: v.$font-mono;
+        font-weight: bold;
+      }
+    }
+  }
+
+  .summary-actions {
+    display: flex;
+    gap: v.$spacing-sm;
+
+    button {
+      @include c.button-reset;
+      padding: v.$spacing-xs v.$spacing-md;
+      border: 1px solid v.$primary;
+      background: transparent;
+      color: v.$primary;
+      border-radius: v.$border-radius-sm;
+      font-size: v.$font-size-xxs;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: all v.$transition-fast;
+
+      &:hover {
+        background: rgba(v.$primary, 0.1);
+        box-shadow: 0 0 8px rgba(v.$primary, 0.3);
+      }
+    }
+  }
+}
+
+.confirmation-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(v.$black, 0.85);
+  backdrop-filter: blur(5px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .confirmation-dialog {
+    @include c.card-styles;
+    width: 450px;
+    background: rgba(v.$black, 0.9);
+    border: 1px solid v.$error;
+    padding: v.$spacing-lg;
+    box-shadow: 0 0 20px rgba(v.$error, 0.2);
+
+    h4 {
+      color: v.$error;
+      margin-bottom: v.$spacing-md;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .confirmation-content {
+      p {
+        color: v.$white;
+        font-size: v.$font-size-sm;
+        text-align: center;
+        margin-bottom: v.$spacing-md;
+      }
+
+      .period-details {
+        background: rgba(v.$white, 0.05);
+        padding: v.$spacing-md;
+        border-radius: v.$border-radius-sm;
+        margin-bottom: v.$spacing-md;
+
+        .detail-item {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: v.$spacing-xs;
+          font-size: v.$font-size-xs;
+          
+          &:last-child { margin-bottom: 0; }
+          
+          .detail-label { color: v.$gray-light; }
+          .detail-value { color: v.$white; font-family: v.$font-mono; }
+        }
+      }
+
+      .warning-message {
+        background: rgba(v.$error, 0.1);
+        border: 1px solid rgba(v.$error, 0.3);
+        padding: v.$spacing-sm;
+        border-radius: v.$border-radius-sm;
+        color: v.$error;
+        font-size: v.$font-size-xxs;
+        text-align: center;
+        
+        p { margin: 4px 0; }
+      }
+    }
+
+    .confirmation-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: v.$spacing-sm;
+      margin-top: v.$spacing-lg;
+
+      button {
+        @include c.button-reset;
+        padding: v.$spacing-xs v.$spacing-md;
+        border-radius: v.$border-radius-sm;
+        font-size: v.$font-size-xs;
+        cursor: pointer;
+      }
+
+      .cancel-btn {
+        background: transparent;
+        border: 1px solid v.$gray-light;
+        color: v.$gray-light;
+      }
+
+      .confirm-btn {
+        @include c.button-primary;
+        background: v.$error;
+        color: v.$white;
+        font-weight: bold;
+      }
+    }
+  }
+}

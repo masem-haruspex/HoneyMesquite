@@ -1,0 +1,82 @@
+@use '../scss/vars' as v;
+@use '../scss/components' as c;
+
+.profit-loss-form {
+  &__container {
+    @include c.card-styles;
+    width: 420px;
+    backdrop-filter: blur(5px);
+    background: rgba(v.$card-bg, 0.9);
+    box-sizing: border-box;
+  }
+
+  &__title {
+    color: v.$primary;
+    font-family: v.$font-primary;
+    text-align: center;
+    margin-bottom: v.$spacing-lg;
+    font-size: v.$font-size-xl;
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: v.$spacing-md;
+  }
+
+  &__input-group {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__label {
+    color: v.$gray-light;
+    font-size: v.$font-size-xs;
+    margin-bottom: v.$spacing-xxs;
+  }
+
+  &__input,
+  select {
+    box-sizing: border-box;
+    @include c.form-input;
+    background: rgba(v.$white, 0.1);
+    color: v.$white;
+  }
+
+  &__error {
+    color: v.$error;
+    font-size: v.$font-size-xxs;
+    margin-top: v.$spacing-xxs;
+  }
+
+  &__button {
+    @include c.button-primary;
+    width: 100%;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: v.$font-size-xs;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &:hover:not(:disabled) {
+      background: rgba(v.$primary, 0.4);
+      border-color: v.$accent;
+      box-shadow: 0 0 10px rgba(v.$accent, 0.5);
+    }
+
+    &--secondary {
+      @include c.button-secondary;
+      background: transparent;
+      border: 1px solid v.$gray-dark;
+      color: v.$gray-light;
+
+      &:hover:not(:disabled) {
+        background: rgba(v.$gray-dark, 0.2);
+      }
+    }
+  }
+}
